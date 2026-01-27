@@ -1,6 +1,6 @@
 ---
-name: sag
-description: ElevenLabs text-to-speech with mac-style say UX.
+name: SAG
+description: 具有mac风格say用户体验的ElevenLabs文本转语音。
 homepage: https://sag.sh
 metadata: {"clawdbot":{"emoji":"🗣️","requires":{"bins":["sag"],"env":["ELEVENLABS_API_KEY"]},"primaryEnv":"ELEVENLABS_API_KEY","install":[{"id":"brew","kind":"brew","formula":"steipete/tap/sag","bins":["sag"],"label":"Install sag (brew)"}]}}
 ---

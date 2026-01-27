@@ -1,6 +1,6 @@
 ---
-name: video-frames
-description: Extract frames or short clips from videos using ffmpeg.
+name: 视频帧提取
+description: 使用ffmpeg从视频中提取帧或短视频片段。
 homepage: https://ffmpeg.org
 metadata: {"clawdbot":{"emoji":"🎞️","requires":{"bins":["ffmpeg"]},"install":[{"id":"brew","kind":"brew","formula":"ffmpeg","bins":["ffmpeg"],"label":"Install ffmpeg (brew)"}]}}
 ---

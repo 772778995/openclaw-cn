@@ -1,6 +1,6 @@
 ---
-name: github
-description: "Interact with GitHub using the `gh` CLI. Use `gh issue`, `gh pr`, `gh run`, and `gh api` for issues, PRs, CI runs, and advanced queries."
+name: GitHub
+description: "使用`gh`命令行工具与GitHub交互。使用`gh issue`、`gh pr`、`gh run`和`gh api`处理问题、PR、CI运行和高级查询。"
 metadata: {"clawdbot":{"emoji":"🐙","requires":{"bins":["gh"]},"install":[{"id":"brew","kind":"brew","formula":"gh","bins":["gh"],"label":"Install GitHub CLI (brew)"},{"id":"apt","kind":"apt","package":"gh","bins":["gh"],"label":"Install GitHub CLI (apt)"}]}}
 ---
 

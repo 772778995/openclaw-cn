@@ -1,6 +1,6 @@
 ---
-name: oracle
-description: Best practices for using the oracle CLI (prompt + file bundling, engines, sessions, and file attachment patterns).
+name: Oracle
+description: 使用oracle命令行工具的最佳实践（提示+文件打包、引擎、会话和文件附件模式）。
 homepage: https://askoracle.dev
 metadata: {"clawdbot":{"emoji":"🧿","requires":{"bins":["oracle"]},"install":[{"id":"node","kind":"node","package":"@steipete/oracle","bins":["oracle"],"label":"Install oracle (node)"}]}}
 ---

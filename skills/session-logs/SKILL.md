@@ -1,6 +1,6 @@
 ---
-name: session-logs
-description: Search and analyze your own session logs (older/parent conversations) using jq.
+name: 会话日志
+description: 使用jq搜索和分析你自己的会话日志（较早/父级对话）。
 metadata: {"clawdbot":{"emoji":"📜","requires":{"bins":["jq","rg"]}}}
 ---
 

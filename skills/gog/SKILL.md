@@ -1,6 +1,6 @@
 ---
-name: gog
-description: Google Workspace CLI for Gmail, Calendar, Drive, Contacts, Sheets, and Docs.
+name: 谷歌工作区
+description: 用于Gmail、日历、云端硬盘、联系人、表格和文档的Google工作区命令行工具。
 homepage: https://gogcli.sh
 metadata: {"clawdbot":{"emoji":"🎮","requires":{"bins":["gog"]},"install":[{"id":"brew","kind":"brew","formula":"steipete/tap/gogcli","bins":["gog"],"label":"Install gog (brew)"}]}}
 ---

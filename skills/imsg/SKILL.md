@@ -1,6 +1,6 @@
 ---
-name: imsg
-description: iMessage/SMS CLI for listing chats, history, watch, and sending.
+name: iMessage短信
+description: 用于列出聊天记录、历史记录、监控和发送的iMessage/SMS命令行工具。
 homepage: https://imsg.to
 metadata: {"clawdbot":{"emoji":"📨","os":["darwin"],"requires":{"bins":["imsg"]},"install":[{"id":"brew","kind":"brew","formula":"steipete/tap/imsg","bins":["imsg"],"label":"Install imsg (brew)"}]}}
 ---

@@ -1,6 +1,6 @@
 ---
-name: discord
-description: Use when you need to control Discord from Clawdbot via the discord tool: send messages, react, post or upload stickers, upload emojis, run polls, manage threads/pins/search, create/edit/delete channels and categories, fetch permissions or member/role/channel info, or handle moderation actions in Discord DMs or channels.
+name: Discord
+description: 当你需要通过discord工具从Clawdbot控制Discord时使用：发送消息、反应、发布或上传贴纸、上传表情符号、运行投票、管理线程/置顶/搜索、创建/编辑/删除频道和分类、获取权限或成员/角色/频道信息，或在Discord私信或频道中处理版主操作。
 metadata: {"clawdbot":{"emoji":"🎮","requires":{"config":["channels.discord"]}}}
 ---
 

@@ -1,6 +1,6 @@
 ---
-name: nano-banana-pro
-description: Generate or edit images via Gemini 3 Pro Image (Nano Banana Pro).
+name: 纳米香蕉专业版
+description: 通过Gemini 3 Pro图像（纳米香蕉专业版）生成或编辑图像。
 homepage: https://ai.google.dev/
 metadata: {"clawdbot":{"emoji":"🍌","requires":{"bins":["uv"],"env":["GEMINI_API_KEY"]},"primaryEnv":"GEMINI_API_KEY","install":[{"id":"uv-brew","kind":"brew","formula":"uv","bins":["uv"],"label":"Install uv (brew)"}]}}
 ---

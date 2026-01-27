@@ -1,6 +1,6 @@
 ---
-name: himalaya
-description: "CLI to manage emails via IMAP/SMTP. Use `himalaya` to list, read, write, reply, forward, search, and organize emails from the terminal. Supports multiple accounts and message composition with MML (MIME Meta Language)."
+name: 喜马拉雅邮件
+description: "通过IMAP/SMTP管理电子邮件的命令行工具。使用`himalaya`从终端列出、阅读、撰写、回复、转发、搜索和组织电子邮件。支持多个账户和使用MML（MIME元语言）的消息撰写。"
 homepage: https://github.com/pimalaya/himalaya
 metadata: {"clawdbot":{"emoji":"📧","requires":{"bins":["himalaya"]},"install":[{"id":"brew","kind":"brew","formula":"himalaya","bins":["himalaya"],"label":"Install Himalaya (brew)"}]}}
 ---

@@ -1,6 +1,6 @@
 ---
-name: clawdhub
-description: Use the ClawdHub CLI to search, install, update, and publish agent skills from clawdhub.com. Use when you need to fetch new skills on the fly, sync installed skills to latest or a specific version, or publish new/updated skill folders with the npm-installed clawdhub CLI.
+name: ClawdHub
+description: 使用ClawdHub命令行工具从clawdhub.com搜索、安装、更新和发布代理技能。当你需要即时获取新技能、将已安装的技能同步到最新版本或特定版本，或使用npm安装的clawdhub CLI发布新/更新的技能文件夹时使用。
 metadata: {"clawdbot":{"requires":{"bins":["clawdhub"]},"install":[{"id":"node","kind":"node","package":"clawdhub","bins":["clawdhub"],"label":"Install ClawdHub CLI (npm)"}]}}
 ---
 

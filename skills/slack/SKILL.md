@@ -1,6 +1,6 @@
 ---
-name: slack
-description: Use when you need to control Slack from Clawdbot via the slack tool, including reacting to messages or pinning/unpinning items in Slack channels or DMs.
+name: Slack
+description: 当你需要通过slack工具从Clawdbot控制Slack时使用，包括对消息做出反应或在Slack频道或私信中固定/取消固定项目。
 metadata: {"clawdbot":{"emoji":"💬","requires":{"config":["channels.slack"]}}}
 ---
 

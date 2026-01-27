@@ -1,6 +1,6 @@
 ---
-name: goplaces
-description: Query Google Places API (New) via the goplaces CLI for text search, place details, resolve, and reviews. Use for human-friendly place lookup or JSON output for scripts.
+name: 地点搜索
+description: 通过goplaces命令行工具查询Google地点API（新版），用于文本搜索、地点详情、解析和评论。用于人性化的地点查找或脚本的JSON输出。
 homepage: https://github.com/steipete/goplaces
 metadata: {"clawdbot":{"emoji":"📍","requires":{"bins":["goplaces"],"env":["GOOGLE_PLACES_API_KEY"]},"primaryEnv":"GOOGLE_PLACES_API_KEY","install":[{"id":"brew","kind":"brew","formula":"steipete/tap/goplaces","bins":["goplaces"],"label":"Install goplaces (brew)"}]}}
 ---

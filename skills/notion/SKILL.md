@@ -1,6 +1,6 @@
 ---
-name: notion
-description: Notion API for creating and managing pages, databases, and blocks.
+name: Notion
+description: 用于创建和管理页面、数据库和区块的Notion API。
 homepage: https://developers.notion.com
 metadata: {"clawdbot":{"emoji":"📝","requires":{"env":["NOTION_API_KEY"]},"primaryEnv":"NOTION_API_KEY"}}
 ---

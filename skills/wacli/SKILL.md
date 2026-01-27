@@ -1,6 +1,6 @@
 ---
-name: wacli
-description: Send WhatsApp messages to other people or search/sync WhatsApp history via the wacli CLI (not for normal user chats).
+name: WhatsApp命令行工具
+description: 通过wacli命令行工具向其他人发送WhatsApp消息或搜索/同步WhatsApp历史记录（不适用于普通用户聊天）。
 homepage: https://wacli.sh
 metadata: {"clawdbot":{"emoji":"📱","requires":{"bins":["wacli"]},"install":[{"id":"brew","kind":"brew","formula":"steipete/tap/wacli","bins":["wacli"],"label":"Install wacli (brew)"},{"id":"go","kind":"go","module":"github.com/steipete/wacli/cmd/wacli@latest","bins":["wacli"],"label":"Install wacli (go)"}]}}
 ---
