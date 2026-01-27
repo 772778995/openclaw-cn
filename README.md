@@ -98,7 +98,7 @@ pnpm install
 pnpm ui:build # 首次运行会自动安装 UI 依赖
 pnpm build
 
-pnpm clawdbot onboard --install-daemon
+pnpm clawdbot-cn onboard --install-daemon
 
 # 开发循环（TS 文件变更时自动重载）
 pnpm gateway:watch
