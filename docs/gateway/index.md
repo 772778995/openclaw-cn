@@ -190,11 +190,11 @@ OPENCLAW_CONFIG_PATH=~/.openclaw/b.json OPENCLAW_STATE_DIR=~/.openclaw-b clawdbo
 使用网关 CLI 进行安装/启动/停止/重启/状态查询：
 
 ```bash
-clawdbot gateway status
-clawdbot gateway install
-clawdbot gateway stop
-clawdbot gateway restart
-clawdbot logs --follow
+openclaw-cn gateway status
+openclaw-cn gateway install
+openclaw-cn gateway stop
+openclaw-cn gateway restart
+openclaw-cn logs --follow
 ```
 
 注意事项：

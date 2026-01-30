@@ -5,14 +5,14 @@ read_when:
 ---
 # 安全 🔒
 
-## 快速检查：`clawdbot security audit`
+## 快速检查：`openclaw-cn security audit`
 
 定期运行此命令（特别是在更改配置或暴露网络服务后）：
 
 ```bash
-clawdbot security audit
-clawdbot security audit --deep
-clawdbot security audit --fix
+openclaw-cn security audit
+openclaw-cn security audit --deep
+openclaw-cn security audit --fix
 ```
 
 它会标记常见问题（网关认证暴露、浏览器控制暴露、提升的白名单、文件系统权限）。
@@ -24,7 +24,7 @@ clawdbot security audit --fix
 
 在您的机器上运行具有 shell 访问权限的 AI 代理是……*刺激的*。以下是避免被攻陷的方法。
 
-Clawdbot 既是一个产品也是一个实验：您正在将前沿模型的行为连接到真实的通信表面和真实工具。**没有 "完全安全" 的设置。** 目标是明确地考虑以下方面：
+openclaw-cn 既是一个产品也是一个实验：您正在将前沿模型的行为连接到真实的通信表面和真实工具。**没有 "完全安全" 的设置。** 目标是明确地考虑以下方面：
 - 谁可以与您的机器人对话
 - 机器人被允许在哪里行动
 - 机器人可以接触什么
@@ -41,7 +41,7 @@ Clawdbot 既是一个产品也是一个实验：您正在将前沿模型的行�
 - **插件**（扩展存在但没有明确的白名单）。
 - **模型卫生**（当配置的模型看起来是旧版时发出警告；不是硬性阻止）。
 
-如果您运行 `--deep`，Clawdbot 还会尝试尽力而为的实时网关探测。
+如果您运行 `--deep`，openclaw-cn 还会尝试尽力而为的实时网关探测。
 
 ## 安全审计清单
 
@@ -65,7 +65,7 @@ to **仅令牌认证** 并在省略设备身份时跳过设备配对。这是一
 完全禁用设备身份检查。这是一种严重的安全降级；
 除非您正在进行积极调试并且可以快速恢复，否则请保持关闭。
 
-当启用此设置时，`clawdbot security audit` 会发出警告。
+当启用此设置时，`openclaw-cn security audit` 会发出警告。
 
 ## 反向代理配置
 
@@ -100,7 +100,7 @@ Clawdbot 将会话转录存储在 `~/.openclaw/agents/<agentId>/sessions/*.jsonl
 - 如果您不想要远程执行，请将安全性设置为 **拒绝** 并删除该 Mac 的节点配对。
 ## 动态技能 (watcher / 远程节点)
 
-Clawdbot 可以在会话中途刷新技能列表：
+openclaw-cn 可以在会话中途刷新技能列表：
 - **技能监视器**：对 `SKILL.md` 的更改可以在下一个代理回合更新技能快照。
 - **远程节点**：连接 macOS 节点可以使仅 macOS 的技能生效（基于二进制文件探测）。
 
@@ -121,7 +121,7 @@ Clawdbot 可以在会话中途刷新技能列表：
 
 这里的大多数故障并不是复杂的漏洞利用——而是“有人给机器人发消息，机器人做了他们要求的事情”。
 
-Clawdbot 的立场：
+openclaw-cn 的立场：
 - **身份优先：** 决定谁可以与机器人对话（私信配对/白名单/明确的“开放”）。
 - **范围其次：** 决定机器人被允许在何处行动（群组白名单+提及门控、工具、沙盒、设备权限）。
 - **模型最后：** 假设模型可能被操控；设计时要让操控的影响范围有限。
@@ -135,7 +135,7 @@ Clawdbot 的立场：
 - 插件更改后重启网关。
 - 如果您从 npm 安装插件（`openclaw-cn plugins install <npm-spec>`），将其视为运行不受信任的代码：
   - 安装路径是 `~/.openclaw/extensions/<pluginId>/`（或 `$OPENCLAW_STATE_DIR/extensions/<pluginId>/`）。
-  - Clawdbot 使用 `npm pack` 然后在该目录中运行 `npm install --omit=dev`（npm 生命周期脚本可能在安装期间执行代码）。
+  - openclaw-cn 使用 `npm pack` 然后在该目录中运行 `npm install --omit=dev`（npm 生命周期脚本可能在安装期间执行代码）。
   - 优先使用固定的精确版本（`@scope/pkg@1.2.3`），并在启用前检查磁盘上的解包代码。
 
 详情：[插件](/plugin)
@@ -248,7 +248,7 @@ Clawdbot 有两个独立的“谁能触发我？”层：
    - 检查网关日志和最近的会话/转录以查找意外的工具调用。
    - 审查 `extensions/` 并删除任何您不完全信任的内容。
 4. **重新运行审计**
-   - `clawdbot security audit --deep` 并确认报告是干净的。
+   - `openclaw-cn security audit --deep` 并确认报告是干净的。
 ## 经验教训（痛苦的方式学到的）
 
 ### `find ~` 事件 🦞
@@ -272,7 +272,7 @@ Clawdbot 有两个独立的“谁能触发我？”层：
 - `~/.openclaw/openclaw.json`: `600`（仅用户读/写）
 - `~/.openclaw`: `700`（仅用户）
 
-`clawdbot doctor` 可以警告并提供收紧这些权限的选项。
+`openclaw-cn doctor` 可以警告并提供收紧这些权限的选项。
 
 ### 0.4) 网络暴露（绑定 + 端口 + 防火墙）
 
@@ -290,7 +290,7 @@ Clawdbot 有两个独立的“谁能触发我？”层：
 - 永远不要在 `0.0.0.0` 上未经认证暴露网关。
 ### 0.4.1) mDNS/Bonjour 发现（信息泄露）
 
-网关通过 mDNS（端口 5353 上的 `_clawdbot-gw._tcp`）广播其存在以进行本地设备发现。在完整模式下，这包括可能暴露操作细节的 TXT 记录：
+网关通过 mDNS（端口 5353 上的 `_openclaw-gw._tcp`）广播其存在以进行本地设备发现。在完整模式下，这包括可能暴露操作细节的 TXT 记录：
 
 - `cliPath`: CLI 二进制文件的完整文件系统路径（显示用户名和安装位置）
 - `sshPort`: 广告主机上的 SSH 可用性
@@ -348,7 +348,7 @@ Clawdbot 有两个独立的“谁能触发我？”层：
 }
 ```
 
-医生可以为您生成一个：`clawdbot doctor --generate-gateway-token`。
+医生可以为您生成一个：`openclaw-cn doctor --generate-gateway-token`。
 
 注意：`gateway.remote.token`**仅**用于远程 CLI 调用；它不
 保护本地 WS 访问。
@@ -400,7 +400,7 @@ Clawdbot 有两个独立的“谁能触发我？”层：
 
 ```bash
 # 在运行 Chrome 的机器上
-clawdbot browser serve --bind 127.0.0.1 --port 18791 --token <token>
+openclaw-cn browser serve --bind 127.0.0.1 --port 18791 --token <token>
 tailscale serve https / http://127.0.0.1:18791
 ```
 
@@ -437,7 +437,7 @@ tailscale serve https / http://127.0.0.1:18791
 建议：
 - 保持工具摘要编辑开启（`logging.redactSensitive: "tools"`；默认）。
 - 通过 `logging.redactPatterns` 为您的环境添加自定义模式（令牌、主机名、内部 URL）。
-- 分享诊断信息时，优先使用 `clawdbot status --all`（可粘贴，秘密已编辑）而不是原始日志。
+- 分享诊断信息时，优先使用 `openclaw-cn status --all`（可粘贴，秘密已编辑）而不是原始日志。
 - 如果不需要长期保留，请修剪旧的会话转录和日志文件。
 
 详情：[日志](/gateway/logging)
@@ -642,7 +642,7 @@ tailscale serve https / http://127.0.0.1:18791
 
 ### 控制
 
-1. **停止它：** 停止 macOS 应用（如果它监管网关）或终止您的 `clawdbot gateway` 进程。
+1. **停止它：** 停止 macOS 应用（如果它监管网关）或终止您的 `openclaw-cn gateway` 进程。
 2. **关闭暴露：** 设置 `gateway.bind: "loopback"`（或禁用 Tailscale Funnel/Serve）直到您了解发生了什么。
 3. **冻结访问：** 将有风险的私信/群组切换到 `dmPolicy: "disabled"` / 需要提及，并删除您拥有的 `"*"` 全部允许条目。
 
@@ -654,7 +654,7 @@ tailscale serve https / http://127.0.0.1:18791
 
 ### 审计
 
-1. 检查网关日志：`/tmp/clawdbot/clawdbot-YYYY-MM-DD.log`（或 `logging.file`）。
+1. 检查网关日志：`/tmp/openclaw/openclaw-YYYY-MM-DD.log`（或 `logging.file`）。
 2. 查看相关转录：`~/.openclaw/agents/<agentId>/sessions/*.jsonl`。
 3. 查看最近的配置更改（任何可能扩大访问的更改：`gateway.bind`、`gateway.auth`、私信/群组策略、`tools.elevated`、插件更改）。
 

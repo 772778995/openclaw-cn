@@ -84,8 +84,8 @@ clawdbot gateway health --url ws://127.0.0.1:18789
 `gateway status` shows the Gateway service (launchd/systemd/schtasks) plus an optional RPC probe.
 
 ```bash
-clawdbot gateway status
-clawdbot gateway status --json
+openclaw-cn gateway status
+openclaw-cn gateway status --json
 ```
 
 Options:

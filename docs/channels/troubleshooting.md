@@ -9,7 +9,7 @@ read_when:
 Start with:
 
 ```bash
-clawdbot doctor
+openclaw-cn doctor
 openclaw-cn channels status --probe
 ```
 

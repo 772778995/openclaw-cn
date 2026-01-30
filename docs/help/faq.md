@@ -285,8 +285,8 @@ What they do:
 - `openclaw-cn models status`: checks provider auth + model availability.
 - `clawdbot doctor`: validates and repairs common config/state issues.
 
-Other useful CLI checks: `clawdbot status --all`, `clawdbot logs --follow`,
-`clawdbot gateway status`, `clawdbot health --verbose`.
+Other useful CLI checks: `openclaw-cn status --all`, `openclaw-cn logs --follow`,
+`openclaw-cn gateway status`, `openclaw-cn health --verbose`.
 
 Quick debug loop: [First 60 seconds if something's broken](#first-60-seconds-if-somethings-broken).
 Install docs: [Install](/install), [Installer flags](/install/installer), [Updating](/install/updating).
@@ -2248,16 +2248,16 @@ Precedence:
 --port > OPENCLAW_GATEWAY_PORT > gateway.port > default 18789
 ```
 
-### Why does clawdbot gateway status say Runtime running but RPC probe failed
+### Why does openclaw-cn gateway status say Runtime running but RPC probe failed
 
 Because “running” is the **supervisor’s** view (launchd/systemd/schtasks). The RPC probe is the CLI actually connecting to the gateway WebSocket and calling `status`.
 
-Use `clawdbot gateway status` and trust these lines:
+Use `openclaw-cn gateway status` and trust these lines:
 - `Probe target:` (the URL the probe actually used)
 - `Listening:` (what’s actually bound on the port)
 - `Last gateway error:` (common root cause when the process is alive but the port isn’t listening)
 
-### Why does clawdbot gateway status show Config cli and Config service different
+### Why does openclaw-cn gateway status show Config cli and Config service different
 
 You’re editing one config file while the service is running another (often a `--profile` / `OPENCLAW_STATE_DIR` mismatch).
 
@@ -2392,11 +2392,11 @@ See [Troubleshooting](/gateway/troubleshooting#log-locations) for more.
 Use the gateway helpers:
 
 ```bash
-clawdbot gateway status
-clawdbot gateway restart
+openclaw-cn gateway status
+openclaw-cn gateway restart
 ```
 
-If you run the gateway manually, `clawdbot gateway --force` can reclaim the port. See [Gateway](/gateway).
+If you run the gateway manually, `openclaw-cn gateway --force` can reclaim the port. See [Gateway](/gateway).
 
 ### I closed my terminal on Windows how do I restart Clawdbot
 
@@ -2408,14 +2408,14 @@ Open PowerShell, enter WSL, then restart:
 
 ```powershell
 wsl
-clawdbot gateway status
-clawdbot gateway restart
+openclaw-cn gateway status
+openclaw-cn gateway restart
 ```
 
 If you never installed the service, start it in the foreground:
 
 ```bash
-clawdbot gateway run
+openclaw-cn gateway run
 ```
 
 **2) Native Windows (not recommended):** the Gateway runs directly in Windows.
@@ -2423,14 +2423,14 @@ clawdbot gateway run
 Open PowerShell and run:
 
 ```powershell
-clawdbot gateway status
-clawdbot gateway restart
+openclaw-cn gateway status
+openclaw-cn gateway restart
 ```
 
 If you run it manually (no service), use:
 
 ```powershell
-clawdbot gateway run
+openclaw-cn gateway run
 ```
 
 Docs: [Windows (WSL2)](/platforms/windows), [Gateway service runbook](/gateway).
@@ -2440,10 +2440,10 @@ Docs: [Windows (WSL2)](/platforms/windows), [Gateway service runbook](/gateway).
 Start with a quick health sweep:
 
 ```bash
-clawdbot status
+openclaw-cn status
 openclaw-cn models status
 openclaw-cn channels status
-clawdbot logs --follow
+openclaw-cn logs --follow
 ```
 
 Common causes:
@@ -2460,15 +2460,15 @@ Docs: [Channels](/channels), [Troubleshooting](/gateway/troubleshooting), [Remot
 
 This usually means the UI lost the WebSocket connection. Check:
 
-1) Is the Gateway running? `clawdbot gateway status`
-2) Is the Gateway healthy? `clawdbot status`
-3) Does the UI have the right token? `clawdbot dashboard`
+1) Is the Gateway running? `openclaw-cn gateway status`
+2) Is the Gateway healthy? `openclaw-cn status`
+3) Does the UI have the right token? `openclaw-cn dashboard`
 4) If remote, is the tunnel/Tailscale link up?
 
 Then tail logs:
 
 ```bash
-clawdbot logs --follow
+openclaw-cn logs --follow
 ```
 
 Docs: [Dashboard](/web/dashboard), [Remote access](/gateway/remote), [Troubleshooting](/gateway/troubleshooting).
@@ -2492,9 +2492,9 @@ Docs: [Telegram](/channels/telegram), [Channel troubleshooting](/channels/troubl
 First confirm the Gateway is reachable and the agent can run:
 
 ```bash
-clawdbot status
+openclaw-cn status
 openclaw-cn models status
-clawdbot logs --follow
+openclaw-cn logs --follow
 ```
 
 In the TUI, use `/status` to see the current state. If you expect replies in a chat
@@ -2507,8 +2507,8 @@ Docs: [TUI](/tui), [Slash commands](/tools/slash-commands).
 If you installed the service:
 
 ```bash
-clawdbot gateway stop
-clawdbot gateway start
+openclaw-cn gateway stop
+openclaw-cn gateway start
 ```
 
 This stops/starts the **supervised service** (launchd on macOS, systemd on Linux).
@@ -2522,12 +2522,12 @@ clawdbot gateway run
 
 Docs: [Gateway service runbook](/gateway).
 
-### ELI5 clawdbot gateway restart vs clawdbot gateway
+### ELI5 openclaw-cn gateway restart vs openclaw-cn gateway
 
-- `clawdbot gateway restart`: restarts the **background service** (launchd/systemd).
-- `clawdbot gateway`: runs the gateway **in the foreground** for this terminal session.
+- `openclaw-cn gateway restart`: restarts the **background service** (launchd/systemd).
+- `openclaw-cn gateway`: runs the gateway **in the foreground** for this terminal session.
 
-If you installed the service, use the gateway commands. Use `clawdbot gateway` when
+If you installed the service, use the gateway commands. Use `openclaw-cn gateway` when
 you want a one-off, foreground run.
 
 ### Whats the fastest way to get more details when something fails

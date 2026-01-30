@@ -221,7 +221,7 @@ For the full Oracle guide, see the [community docs](https://gist.github.com/rssn
 
 ### Gateway won't start
 ```bash
-clawdbot gateway status
+openclaw-cn gateway status
 clawdbot doctor --non-interactive
 journalctl -u clawdbot --no-pager -n 50
 ```

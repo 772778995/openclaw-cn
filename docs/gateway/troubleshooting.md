@@ -1,458 +1,458 @@
 ---
-summary: "Quick troubleshooting guide for common Clawdbot failures"
+summary: "常见 Clawdbot 故障的快速故障排除指南"
 read_when:
-  - Investigating runtime issues or failures
+  - 调查运行时问题或故障时
 ---
-# Troubleshooting 🔧
+# 故障排除 🔧
 
-When Clawdbot misbehaves, here's how to fix it.
+当 Clawdbot 表现异常时，这里是如何修复它的方法。
 
-Start with the FAQ’s [First 60 seconds](/help/faq#first-60-seconds-if-somethings-broken) if you just want a quick triage recipe. This page goes deeper on runtime failures and diagnostics.
+如果您只是想要一个快速分类方案，请从 FAQ 的 [前 60 秒](/help/faq#first-60-seconds-if-somethings-broken) 开始。本页面深入探讨运行时故障和诊断。
 
-Provider-specific shortcuts: [/channels/troubleshooting](/channels/troubleshooting)
+特定提供者的快捷方式：[/channels/troubleshooting](/channels/troubleshooting)
 
-## Status & Diagnostics
+## 状态和诊断
 
-Quick triage commands (in order):
+快速分类命令（按顺序）：
 
-| Command | What it tells you | When to use it |
+| 命令 | 告诉你什么 | 何时使用 |
 |---|---|---|
-| `clawdbot status` | Local summary: OS + update, gateway reachability/mode, service, agents/sessions, provider config state | First check, quick overview |
-| `clawdbot status --all` | Full local diagnosis (read-only, pasteable, safe-ish) incl. log tail | When you need to share a debug report |
-| `clawdbot status --deep` | Runs gateway health checks (incl. provider probes; requires reachable gateway) | When “configured” doesn’t mean “working” |
-| `clawdbot gateway probe` | Gateway discovery + reachability (local + remote targets) | When you suspect you’re probing the wrong gateway |
-| `openclaw-cn channels status --probe` | Asks the running gateway for channel status (and optionally probes) | When gateway is reachable but channels misbehave |
-| `clawdbot gateway status` | Supervisor state (launchd/systemd/schtasks), runtime PID/exit, last gateway error | When the service “looks loaded” but nothing runs |
-| `clawdbot logs --follow` | Live logs (best signal for runtime issues) | When you need the actual failure reason |
+| `openclaw-cn status` | 本地摘要：操作系统 + 更新，网关可达性/模式，服务，代理/会话，提供者配置状态 | 首次检查，快速概览 |
+| `openclaw-cn status --all` | 完整本地诊断（只读，可粘贴，相对安全）包括日志尾部 | 当您需要分享调试报告时 |
+| `openclaw-cn status --deep` | 运行网关健康检查（包括提供者探测；需要可访问的网关） | 当"已配置"不等于"正在工作"时 |
+| `openclaw-cn gateway probe` | 网关发现 + 可达性（本地 + 远程目标） | 当您怀疑您正在探测错误的网关时 |
+| `openclaw-cn channels status --probe` | 向运行的网关询问通道状态（并可选地进行探测） | 当网关可访问但通道表现异常时 |
+| `openclaw-cn gateway status` | 监督者状态（launchd/systemd/schtasks），运行时 PID/退出，最后的网关错误 | 当服务"看起来已加载"但没有运行任何东西时 |
+| `openclaw-cn logs --follow` | 实时日志（运行时问题的最佳信号） | 当您需要实际失败原因时 |
 
-**Sharing output:** prefer `clawdbot status --all` (it redacts tokens). If you paste `clawdbot status`, consider setting `OPENCLAW_SHOW_SECRETS=0` first (token previews).
+**分享输出：** 优先使用 `openclaw-cn status --all`（它会编辑令牌）。如果您粘贴 `openclaw-cn status`，请考虑先设置 `OPENCLAW_SHOW_SECRETS=0`（令牌预览）。
 
-See also: [Health checks](/gateway/health) and [Logging](/logging).
+另请参阅：[健康检查](/gateway/health) 和 [日志](/logging)。
 
-## Common Issues
+## 常见问题
 
-### No API key found for provider "anthropic"
+### 未找到提供者 "anthropic" 的 API 密钥
 
-This means the **agent’s auth store is empty** or missing Anthropic credentials.
-Auth is **per agent**, so a new agent won’t inherit the main agent’s keys.
+这意味着 **代理的身份验证存储为空** 或缺少 Anthropic 凭据。
+身份验证是 **按代理** 的，所以新代理不会继承主代理的密钥。
 
-Fix options:
-- Re-run onboarding and choose **Anthropic** for that agent.
-- Or paste a setup-token on the **gateway host**:
+修复选项：
+- 重新运行入门设置并为该代理选择 **Anthropic**。
+- 或在 **网关主机** 上粘贴一个设置令牌：
   ```bash
   openclaw-cn models auth setup-token --provider anthropic
   ```
-- Or copy `auth-profiles.json` from the main agent dir to the new agent dir.
+- 或从主代理目录复制 `auth-profiles.json` 到新代理目录。
 
-Verify:
+验证：
 ```bash
 openclaw-cn models status
 ```
 
-### OAuth token refresh failed (Anthropic Claude subscription)
+### OAuth 令牌刷新失败（Anthropic Claude 订阅）
 
-This means the stored Anthropic OAuth token expired and the refresh failed.
-If you’re on a Claude subscription (no API key), the most reliable fix is to
-switch to a **Claude Code setup-token** or re-sync Claude Code CLI OAuth on the
-**gateway host**.
+这意味着存储的 Anthropic OAuth 令牌已过期且刷新失败。
+如果您使用的是 Claude 订阅（没有 API 密钥），最可靠的修复方法是
+切换到 **Claude Code 设置令牌** 或在
+**网关主机** 上重新同步 Claude Code CLI OAuth。
 
-**Recommended (setup-token):**
+**推荐（设置令牌）：**
 
 ```bash
-# Run on the gateway host (runs Claude Code CLI)
+# 在网关主机上运行（运行 Claude Code CLI）
 openclaw-cn models auth setup-token --provider anthropic
 openclaw-cn models status
 ```
 
-If you generated the token elsewhere:
+如果您在其他地方生成了令牌：
 
 ```bash
 openclaw-cn models auth paste-token --provider anthropic
 openclaw-cn models status
 ```
 
-**If you want to keep OAuth reuse:**
-log in with Claude Code CLI on the gateway host, then run `openclaw-cn models status`
-to sync the refreshed token into Clawdbot’s auth store.
+**如果您希望保持 OAuth 重用：**
+在网关主机上使用 Claude Code CLI 登录，然后运行 `openclaw-cn models status`
+将刷新的令牌同步到 Clawdbot 的身份验证存储中。
 
-More detail: [Anthropic](/providers/anthropic) and [OAuth](/concepts/oauth).
+更多详细信息：[Anthropic](/providers/anthropic) 和 [OAuth](/concepts/oauth)。
 
-### Control UI fails on HTTP ("device identity required" / "connect failed")
+### 控制 UI 在 HTTP 上失败（"需要设备身份" / "连接失败"）
 
-If you open the dashboard over plain HTTP (e.g. `http://<lan-ip>:18789/` or
-`http://<tailscale-ip>:18789/`), the browser runs in a **non-secure context** and
-blocks WebCrypto, so device identity can’t be generated.
+如果您通过普通 HTTP 打开仪表板（例如 `http://<lan-ip>:18789/` 或
+`http://<tailscale-ip>:18789/`），浏览器在 **非安全上下文** 中运行并
+阻止 WebCrypto，因此无法生成设备身份。
 
-**Fix:**
-- Prefer HTTPS via [Tailscale Serve](/gateway/tailscale).
-- Or open locally on the gateway host: `http://127.0.0.1:18789/`.
-- If you must stay on HTTP, enable `gateway.controlUi.allowInsecureAuth: true` and
-  use a gateway token (token-only; no device identity/pairing). See
-  [Control UI](/web/control-ui#insecure-http).
+**修复：**
+- 优先通过 [Tailscale Serve](/gateway/tailscale) 使用 HTTPS。
+- 或在网关主机上本地打开：`http://127.0.0.1:18789/`。
+- 如果您必须保持在 HTTP 上，请启用 `gateway.controlUi.allowInsecureAuth: true` 并
+  使用网关令牌（仅令牌；无设备身份/配对）。参见
+  [控制 UI](/web/control-ui#insecure-http)。
 
-### CI Secrets Scan Failed
+### CI Secrets Scan 失败
 
-This means `detect-secrets` found new candidates not yet in the baseline.
-Follow [Secret scanning](/gateway/security#secret-scanning-detect-secrets).
+这意味着 `detect-secrets` 找到了基准线中尚未包含的新候选项目。
+请遵循 [秘密扫描](/gateway/security#secret-scanning-detect-secrets)。
 
-### Service Installed but Nothing is Running
+### 服务已安装但没有运行
 
-If the gateway service is installed but the process exits immediately, the service
-can appear “loaded” while nothing is running.
+如果网关服务已安装但进程立即退出，服务
+可能显示为"已加载"但实际上没有运行任何东西。
 
-**Check:**
+**检查：**
 ```bash
-clawdbot gateway status
-clawdbot doctor
+openclaw-cn gateway status
+openclaw-cn doctor
 ```
 
-Doctor/service will show runtime state (PID/last exit) and log hints.
+Doctor/服务将显示运行时状态（PID/上次退出）和日志提示。
 
-**Logs:**
-- Preferred: `clawdbot logs --follow`
-- File logs (always): `/tmp/clawdbot/clawdbot-YYYY-MM-DD.log` (or your configured `logging.file`)
-- macOS LaunchAgent (if installed): `$OPENCLAW_STATE_DIR/logs/gateway.log` and `gateway.err.log`
-- Linux systemd (if installed): `journalctl --user -u clawdbot-gateway[-<profile>].service -n 200 --no-pager`
-- Windows: `schtasks /Query /TN "Clawdbot Gateway (<profile>)" /V /FO LIST`
+**日志：**
+- 优先使用：`openclaw-cn logs --follow`
+- 文件日志（始终）：`/tmp/openclaw/openclaw-YYYY-MM-DD.log`（或您配置的 `logging.file`）
+- macOS LaunchAgent（如果已安装）：`$OPENCLAW_STATE_DIR/logs/gateway.log` 和 `gateway.err.log`
+- Linux systemd（如果已安装）：`journalctl --user -u clawdbot-gateway[-<profile>].service -n 200 --no-pager`
+- Windows：`schtasks /Query /TN "Clawdbot Gateway (<profile>)" /V /FO LIST`
 
-**Enable more logging:**
-- Bump file log detail (persisted JSONL):
+**启用更多日志记录：**
+- 提高文件日志详细程度（持久化 JSONL）：
   ```json
   { "logging": { "level": "debug" } }
   ```
-- Bump console verbosity (TTY output only):
+- 提高控制台详细程度（仅 TTY 输出）：
   ```json
   { "logging": { "consoleLevel": "debug", "consoleStyle": "pretty" } }
   ```
-- Quick tip: `--verbose` affects **console** output only. File logs remain controlled by `logging.level`.
+- 快速提示：`--verbose` 仅影响 **控制台** 输出。文件日志仍由 `logging.level` 控制。
 
-See [/logging](/logging) for a full overview of formats, config, and access.
+有关格式、配置和访问的完整概述，请参见 [/logging](/logging)。
 
-### "Gateway start blocked: set gateway.mode=local"
+### "网关启动被阻止：设置 gateway.mode=local"
 
-This means the config exists but `gateway.mode` is unset (or not `local`), so the
-Gateway refuses to start.
+这意味着配置存在但 `gateway.mode` 未设置（或不是 `local`），所以
+网关拒绝启动。
 
-**Fix (recommended):**
-- Run the wizard and set the Gateway run mode to **Local**:
+**修复（推荐）：**
+- 运行向导并将网关运行模式设置为 **本地**：
   ```bash
-  clawdbot configure
+  openclaw-cn configure
   ```
-- Or set it directly:
+- 或直接设置：
   ```bash
-  clawdbot config set gateway.mode local
-  ```
-
-**If you meant to run a remote Gateway instead:**
-- Set a remote URL and keep `gateway.mode=remote`:
-  ```bash
-  clawdbot config set gateway.mode remote
-  clawdbot config set gateway.remote.url "wss://gateway.example.com"
+  openclaw-cn config set gateway.mode local
   ```
 
-**Ad-hoc/dev only:** pass `--allow-unconfigured` to start the gateway without
-`gateway.mode=local`.
+**如果您打算运行远程网关：**
+- 设置远程 URL 并保持 `gateway.mode=remote`：
+  ```bash
+  openclaw-cn config set gateway.mode remote
+  openclaw-cn config set gateway.remote.url "wss://gateway.example.com"
+  ```
 
-**No config file yet?** Run `clawdbot setup` to create a starter config, then rerun
-the gateway.
+**仅临时/开发：** 传递 `--allow-unconfigured` 以在没有
+`gateway.mode=local` 的情况下启动网关。
 
-### Service Environment (PATH + runtime)
+**还没有配置文件？** 运行 `openclaw-cn setup` 创建起始配置，然后重新运行
+网关。
 
-The gateway service runs with a **minimal PATH** to avoid shell/manager cruft:
+### 服务环境（PATH + 运行时）
+
+网关服务使用 **最小 PATH** 运行，以避免 shell/manager 杂乱：
 - macOS: `/opt/homebrew/bin`, `/usr/local/bin`, `/usr/bin`, `/bin`
 - Linux: `/usr/local/bin`, `/usr/bin`, `/bin`
 
-This intentionally excludes version managers (nvm/fnm/volta/asdf) and package
-managers (pnpm/npm) because the service does not load your shell init. Runtime
-variables like `DISPLAY` should live in `~/.openclaw/.env` (loaded early by the
-gateway).
-Exec runs on `host=gateway` merge your login-shell `PATH` into the exec environment,
-so missing tools usually mean your shell init isn’t exporting them (or set
-`tools.exec.pathPrepend`). See [/tools/exec](/tools/exec).
+这有意排除版本管理器（nvm/fnm/volta/asdf）和包
+管理器（pnpm/npm），因为服务不加载您的 shell 初始化。运行时
+变量如 `DISPLAY` 应该位于 `~/.openclaw/.env` 中（由
+网关早期加载）。
+在 `host=gateway` 上运行的 Exec 将您的登录 shell `PATH` 合并到 exec 环境中，
+所以缺少工具通常意味着您的 shell 初始化没有导出它们（或设置
+`tools.exec.pathPrepend`）。参见 [/tools/exec](/tools/exec)。
 
-WhatsApp + Telegram channels require **Node**; Bun is unsupported. If your
-service was installed with Bun or a version-managed Node path, run `clawdbot doctor`
-to migrate to a system Node install.
+WhatsApp + Telegram 通道需要 **Node**；Bun 不受支持。如果您的
+服务是使用 Bun 或版本管理的 Node 路径安装的，请运行 `openclaw-cn doctor`
+迁移到系统 Node 安装。
 
-### Skill missing API key in sandbox
+### 技能在沙盒中缺少 API 密钥
 
-**Symptom:** Skill works on host but fails in sandbox with missing API key.
+**症状：** 技能在主机上工作但在沙盒中因缺少 API 密钥而失败。
 
-**Why:** sandboxed exec runs inside Docker and does **not** inherit host `process.env`.
+**原因：** 沙盒化的 exec 在 Docker 内部运行，**不**继承主机的 `process.env`。
 
-**Fix:**
-- set `agents.defaults.sandbox.docker.env` (or per-agent `agents.list[].sandbox.docker.env`)
-- or bake the key into your custom sandbox image
-- then run `clawdbot sandbox recreate --agent <id>` (or `--all`)
+**修复：**
+- 设置 `agents.defaults.sandbox.docker.env`（或按代理 `agents.list[].sandbox.docker.env`）
+- 或将密钥嵌入到您的自定义沙盒镜像中
+- 然后运行 `openclaw-cn sandbox recreate --agent <id>`（或 `--all`）
 
-### Service Running but Port Not Listening
+### 服务运行但端口未监听
 
-If the service reports **running** but nothing is listening on the gateway port,
-the Gateway likely refused to bind.
+如果服务报告 **运行中** 但在网关端口上没有任何监听，
+网关可能拒绝绑定。
 
-**What "running" means here**
-- `Runtime: running` means your supervisor (launchd/systemd/schtasks) thinks the process is alive.
-- `RPC probe` means the CLI could actually connect to the gateway WebSocket and call `status`.
-- Always trust `Probe target:` + `Config (service):` as the “what did we actually try?” lines.
+**"运行中"在此处的含义**
+- `运行时：运行中` 意味着您的监督程序（launchd/systemd/schtasks）认为进程是活动的。
+- `RPC 探测` 意味着 CLI 实际上可以连接到网关 WebSocket 并调用 `status`。
+- 始终信任 `探测目标：` + `配置（服务）：` 作为 "我们实际上尝试了什么？" 的行。
 
-**Check:**
-- `gateway.mode` must be `local` for `clawdbot gateway` and the service.
-- If you set `gateway.mode=remote`, the **CLI defaults** to a remote URL. The service can still be running locally, but your CLI may be probing the wrong place. Use `clawdbot gateway status` to see the service’s resolved port + probe target (or pass `--url`).
-- `clawdbot gateway status` and `clawdbot doctor` surface the **last gateway error** from logs when the service looks running but the port is closed.
-- Non-loopback binds (`lan`/`tailnet`/`custom`, or `auto` when loopback is unavailable) require auth:
-  `gateway.auth.token` (or `OPENCLAW_GATEWAY_TOKEN`).
-- `gateway.remote.token` is for remote CLI calls only; it does **not** enable local auth.
-- `gateway.token` is ignored; use `gateway.auth.token`.
+**检查：**
+- 对于 `openclaw-cn gateway` 和服务，`gateway.mode` 必须是 `local`。
+- 如果您设置了 `gateway.mode=remote`，**CLI 默认** 为远程 URL。服务仍可能在本地运行，但您的 CLI 可能正在探测错误的位置。使用 `openclaw-cn gateway status` 查看服务解析的端口 + 探测目标（或传递 `--url`）。
+- 当服务看起来在运行但端口已关闭时，`openclaw-cn gateway status` 和 `openclaw-cn doctor` 会从日志中显示 **最后的网关错误**。
+- 非回环绑定（`lan`/`tailnet`/`custom`，或当回环不可用时的 `auto`）需要认证：
+  `gateway.auth.token`（或 `OPENCLAW_GATEWAY_TOKEN`）。
+- `gateway.remote.token` 仅用于远程 CLI 调用；它 **不** 启用本地认证。
+- `gateway.token` 被忽略；使用 `gateway.auth.token`。
 
-**If `clawdbot gateway status` shows a config mismatch**
-- `Config (cli): ...` and `Config (service): ...` should normally match.
-- If they don’t, you’re almost certainly editing one config while the service is running another.
-- Fix: rerun `clawdbot gateway install --force` from the same `--profile` / `OPENCLAW_STATE_DIR` you want the service to use.
+**如果 `openclaw-cn gateway status` 显示配置不匹配**
+- `配置（cli）：...` 和 `配置（服务）：...` 通常应该匹配。
+- 如果它们不匹配，您几乎肯定是在编辑一个配置，而服务正在运行另一个配置。
+- 修复：从您希望服务使用的相同 `--profile` / `OPENCLAW_STATE_DIR` 重新运行 `openclaw-cn gateway install --force`。
 
-**If `clawdbot gateway status` reports service config issues**
-- The supervisor config (launchd/systemd/schtasks) is missing current defaults.
-- Fix: run `clawdbot doctor` to update it (or `clawdbot gateway install --force` for a full rewrite).
+**如果 `openclaw-cn gateway status` 报告服务配置问题**
+- 监督程序配置（launchd/systemd/schtasks）缺少当前默认值。
+- 修复：运行 `openclaw-cn doctor` 更新它（或 `openclaw-cn gateway install --force` 进行完全重写）。
 
-**If `Last gateway error:` mentions “refusing to bind … without auth”**
-- You set `gateway.bind` to a non-loopback mode (`lan`/`tailnet`/`custom`, or `auto` when loopback is unavailable) but left auth off.
-- Fix: set `gateway.auth.mode` + `gateway.auth.token` (or export `OPENCLAW_GATEWAY_TOKEN`) and restart the service.
+**如果 `最后网关错误：` 提到 "拒绝绑定 … 没有认证"**
+- 您将 `gateway.bind` 设置为非回环模式（`lan`/`tailnet`/`custom`，或当回环不可用时的 `auto`）但没有启用认证。
+- 修复：设置 `gateway.auth.mode` + `gateway.auth.token`（或导出 `OPENCLAW_GATEWAY_TOKEN`）并重启服务。
 
-**If `clawdbot gateway status` says `bind=tailnet` but no tailnet interface was found**
-- The gateway tried to bind to a Tailscale IP (100.64.0.0/10) but none were detected on the host.
-- Fix: bring up Tailscale on that machine (or change `gateway.bind` to `loopback`/`lan`).
+**如果 `openclaw-cn gateway status` 显示 `bind=tailnet` 但未找到 tailnet 接口**
+- 网关尝试绑定到 Tailscale IP (100.64.0.0/10) 但在主机上未检测到任何。
+- 修复：在该机器上启动 Tailscale（或将 `gateway.bind` 更改为 `loopback`/`lan`）。
 
-**If `Probe note:` says the probe uses loopback**
-- That’s expected for `bind=lan`: the gateway listens on `0.0.0.0` (all interfaces), and loopback should still connect locally.
-- For remote clients, use a real LAN IP (not `0.0.0.0`) plus the port, and ensure auth is configured.
+**如果 `探测注释：` 说探测使用回环**
+- 这对 `bind=lan` 是预期的：网关监听 `0.0.0.0`（所有接口），而回环仍应能本地连接。
+- 对于远程客户端，使用真实的局域网 IP（不是 `0.0.0.0`）加上端口，并确保已配置认证。
 
-### Address Already in Use (Port 18789)
+### 地址已在使用（端口 18789）
 
-This means something is already listening on the gateway port.
+这意味着网关端口上已有其他程序在监听。
 
-**Check:**
+**检查：**
 ```bash
-clawdbot gateway status
+openclaw-cn gateway status
 ```
 
-It will show the listener(s) and likely causes (gateway already running, SSH tunnel).
-If needed, stop the service or pick a different port.
+它将显示监听器和可能的原因（网关已在运行，SSH 隧道）。
+如有需要，停止服务或选择不同的端口。
 
-### Extra Workspace Folders Detected
+### 检测到额外工作空间文件夹
 
-If you upgraded from older installs, you might still have `~/openclawot` on disk.
-Multiple workspace directories can cause confusing auth or state drift because
-only one workspace is active.
+如果您从旧版本升级，磁盘上可能仍有 `~/openclawot`。
+多个工作空间目录可能导致混乱的认证或状态漂移，因为
+只有一个工作空间处于活动状态。
 
-**Fix:** keep a single active workspace and archive/remove the rest. See
-[Agent workspace](/concepts/agent-workspace#extra-workspace-folders).
+**修复：** 保留单个活动工作空间并归档/删除其余的。参见
+[代理工作空间](/concepts/agent-workspace#extra-workspace-folders)。
 
-### Main chat running in a sandbox workspace
+### 主聊天在沙盒工作空间中运行
 
-Symptoms: `pwd` or file tools show `~/.openclaw/sandboxes/...` even though you
-expected the host workspace.
+症状：`pwd` 或文件工具显示 `~/.openclaw/sandboxes/...` 即使您
+期望的是主机工作空间。
 
-**Why:** `agents.defaults.sandbox.mode: "non-main"` keys off `session.mainKey` (default `"main"`).
-Group/channel sessions use their own keys, so they are treated as non-main and
-get sandbox workspaces.
+**原因：** `agents.defaults.sandbox.mode: "non-main"` 基于 `session.mainKey`（默认为 `"main"`）。
+群组/频道会话使用自己的键，因此它们被视为非主要会话并
+获得沙盒工作空间。
 
-**Fix options:**
-- If you want host workspaces for an agent: set `agents.list[].sandbox.mode: "off"`.
-- If you want host workspace access inside sandbox: set `workspaceAccess: "rw"` for that agent.
+**修复选项：**
+- 如果您希望代理使用主机工作空间：设置 `agents.list[].sandbox.mode: "off"`。
+- 如果您希望在沙盒内访问主机工作空间：为该代理设置 `workspaceAccess: "rw"`。
 
-### "Agent was aborted"
+### "代理被中止"
 
-The agent was interrupted mid-response.
+代理在响应过程中被中断。
 
-**Causes:**
-- User sent `stop`, `abort`, `esc`, `wait`, or `exit`
-- Timeout exceeded
-- Process crashed
+**原因：**
+- 用户发送了 `stop`、`abort`、`esc`、`wait` 或 `exit`
+- 超时超过
+- 进程崩溃
 
-**Fix:** Just send another message. The session continues.
+**修复：** 只需发送另一条消息。会话将继续。
 
-### "Agent failed before reply: Unknown model: anthropic/claude-haiku-3-5"
+### "代理回复前失败：未知模型：anthropic/claude-haiku-3-5"
 
-Clawdbot intentionally rejects **older/insecure models** (especially those more
-vulnerable to prompt injection). If you see this error, the model name is no
-longer supported.
+openclaw-cn 故意拒绝 **较旧/不安全的模型**（特别是那些更容易
+受到提示注入攻击的模型）。如果您看到此错误，则表示该模型名称已
+不再受支持。
 
-**Fix:**
-- Pick a **latest** model for the provider and update your config or model alias.
-- If you’re unsure which models are available, run `openclaw-cn models list` or
-  `openclaw-cn models scan` and choose a supported one.
-- Check gateway logs for the detailed failure reason.
+**修复：**
+- 为提供者选择一个 **最新** 模型并更新您的配置或模型别名。
+- 如果您不确定哪些模型可用，请运行 `openclaw-cn models list` 或
+  `openclaw-cn models scan` 并选择一个受支持的模型。
+- 检查网关日志以了解详细的失败原因。
 
-See also: [Models CLI](/cli/models) and [Model providers](/concepts/model-providers).
+另请参阅：[模型 CLI](/cli/models) 和 [模型提供者](/concepts/model-providers)。
 
 ### Messages Not Triggering
 
-**Check 1:** Is the sender allowlisted?
+**检查 1：** 发送者是否在允许列表中？
 ```bash
-clawdbot status
+openclaw-cn status
 ```
-Look for `AllowFrom: ...` in the output.
+在输出中查找 `AllowFrom: ...`。
 
-**Check 2:** For group chats, is mention required?
+**检查 2：** 对于群聊，是否需要提及？
 ```bash
-# The message must match mentionPatterns or explicit mentions; defaults live in channel groups/guilds.
-# Multi-agent: `agents.list[].groupChat.mentionPatterns` overrides global patterns.
-grep -n "agents\\|groupChat\\|mentionPatterns\\|channels\\.whatsapp\\.groups\\|channels\\.telegram\\.groups\\|channels\\.imessage\\.groups\\|channels\\.discord\\.guilds" \
+# 消息必须匹配 mentionPatterns 或明确提及；默认值位于通道组/公会中。
+# 多代理：`agents.list[].groupChat.mentionPatterns` 覆盖全局模式。
+grep -n "agents\|groupChat\|mentionPatterns\|channels\.whatsapp\.groups\|channels\.telegram\.groups\|channels\.imessage\.groups\|channels\.discord\.guilds" \
   "${OPENCLAW_CONFIG_PATH:-$HOME/.openclaw/openclaw.json}"
 ```
 
-**Check 3:** Check the logs
+**检查 3：** 检查日志
 ```bash
-clawdbot logs --follow
-# or if you want quick filters:
-tail -f "$(ls -t /tmp/clawdbot/clawdbot-*.log | head -1)" | grep "blocked\\|skip\\|unauthorized"
+openclaw-cn logs --follow
+# 或如果您想要快速过滤：
+tail -f "$(ls -t /tmp/openclaw/openclaw-*.log | head -1)" | grep "blocked|skip|unauthorized"
 ```
 
-### Pairing Code Not Arriving
+### 配对码未到达
 
-If `dmPolicy` is `pairing`, unknown senders should receive a code and their message is ignored until approved.
+如果 `dmPolicy` 是 `pairing`，未知发送者应该收到一个代码，在获得批准之前他们的消息会被忽略。
 
-**Check 1:** Is a pending request already waiting?
+**检查 1：** 是否有待处理的请求正在等待？
 ```bash
 openclaw-cn pairing list <channel>
 ```
 
-Pending DM pairing requests are capped at **3 per channel** by default. If the list is full, new requests won’t generate a code until one is approved or expires.
+待处理的 DM 配对请求默认限制为每个通道 **3 个**。如果列表已满，新请求不会生成代码，直到其中一个被批准或过期。
 
-**Check 2:** Did the request get created but no reply was sent?
+**检查 2：** 请求是否已创建但没有发送回复？
 ```bash
-clawdbot logs --follow | grep "pairing request"
+openclaw-cn logs --follow | grep "pairing request"
 ```
 
-**Check 3:** Confirm `dmPolicy` isn’t `open`/`allowlist` for that channel.
+**检查 3：** 确认该通道的 `dmPolicy` 不是 `open`/`allowlist`。
 
-### Image + Mention Not Working
+### 图片 + 提及不起作用
 
-Known issue: When you send an image with ONLY a mention (no other text), WhatsApp sometimes doesn't include the mention metadata.
+已知问题：当您仅发送带有提及的消息（没有其他文本）时，WhatsApp 有时不包含提及元数据。
 
-**Workaround:** Add some text with the mention:
-- ❌ `@clawd` + image
-- ✅ `@clawd check this` + image
+**解决方法：** 添加一些带提及的文本：
+- ❌ `@clawd` + 图片
+- ✅ `@clawd check this` + 图片
 
-### Session Not Resuming
+### 会话未恢复
 
-**Check 1:** Is the session file there?
+**检查 1：** 会话文件是否存在？
 ```bash
 ls -la ~/.openclaw/agents/<agentId>/sessions/
 ```
 
-**Check 2:** Is the reset window too short?
+**检查 2：** 重置窗口是否太短？
 ```json
 {
   "session": {
     "reset": {
       "mode": "daily",
       "atHour": 4,
-      "idleMinutes": 10080  // 7 days
+      "idleMinutes": 10080  // 7 天
     }
   }
 }
 ```
 
-**Check 3:** Did someone send `/new`, `/reset`, or a reset trigger?
+**检查 3：** 是否有人发送了 `/new`、`/reset` 或重置触发器？
 
-### Agent Timing Out
+### 代理超时
 
-Default timeout is 30 minutes. For long tasks:
+默认超时时间为 30 分钟。对于长时间任务：
 
 ```json
 {
   "reply": {
-    "timeoutSeconds": 3600  // 1 hour
+    "timeoutSeconds": 3600  // 1 小时
   }
 }
 ```
 
-Or use the `process` tool to background long commands.
+或者使用 `process` 工具在后台运行长时间命令。
 
-### WhatsApp Disconnected
+### WhatsApp 断开连接
 
-```bash
-# Check local status (creds, sessions, queued events)
-clawdbot status
-# Probe the running gateway + channels (WA connect + Telegram + Discord APIs)
-clawdbot status --deep
+```
+# 检查本地状态（凭据，会话，排队事件）
+openclaw-cn status
+# 探测运行中的网关 + 通道（WA 连接 + Telegram + Discord API）
+openclaw-cn status --deep
 
-# View recent connection events
-clawdbot logs --limit 200 | grep "connection\\|disconnect\\|logout"
+# 查看最近的连接事件
+openclaw-cn logs --limit 200 | grep "connection\|disconnect\|logout"
 ```
 
-**Fix:** Usually reconnects automatically once the Gateway is running. If you’re stuck, restart the Gateway process (however you supervise it), or run it manually with verbose output:
+**修复：** 一旦网关运行通常会自动重新连接。如果您卡住了，请重启网关进程（无论您如何监督它），或手动运行详细输出：
 
 ```bash
-clawdbot gateway --verbose
+openclaw-cn gateway --verbose
 ```
 
-If you’re logged out / unlinked:
+如果您已登出/取消链接：
 
 ```bash
 openclaw-cn channels logout
-trash "${OPENCLAW_STATE_DIR:-$HOME/.openclaw}/credentials" # if logout can't cleanly remove everything
-openclaw-cn channels login --verbose       # re-scan QR
+trash "${OPENCLAW_STATE_DIR:-$HOME/.openclaw}/credentials" # 如果登出不能完全清除所有内容
+openclaw-cn channels login --verbose       # 重新扫描二维码
 ```
 
-### Media Send Failing
+### 媒体发送失败
 
-**Check 1:** Is the file path valid?
+**检查 1：** 文件路径是否有效？
 ```bash
 ls -la /path/to/your/image.jpg
 ```
 
-**Check 2:** Is it too large?
-- Images: max 6MB
-- Audio/Video: max 16MB  
-- Documents: max 100MB
+**检查 2：** 文件是否太大？
+- 图片：最大 6MB
+- 音频/视频：最大 16MB  
+- 文档：最大 100MB
 
-**Check 3:** Check media logs
+**检查 3：** 检查媒体日志
 ```bash
-grep "media\\|fetch\\|download" "$(ls -t /tmp/clawdbot/clawdbot-*.log | head -1)" | tail -20
+grep "media|fetch|download" "$(ls -t /tmp/openclaw/openclaw-*.log | head -1)" | tail -20
 ```
 
-### High Memory Usage
+### 高内存使用
 
-Clawdbot keeps conversation history in memory.
+Clawdbot 将对话历史保存在内存中。
 
-**Fix:** Restart periodically or set session limits:
+**修复：** 定期重启或设置会话限制：
 ```json
 {
   "session": {
-    "historyLimit": 100  // Max messages to keep
+    "historyLimit": 100  // 最大保留消息数
   }
 }
 ```
 
-## Common troubleshooting
+## 通用故障排除
 
-### “Gateway won’t start — configuration invalid”
+### "网关无法启动 — 配置无效"
 
-Clawdbot now refuses to start when the config contains unknown keys, malformed values, or invalid types.
-This is intentional for safety.
+当配置包含未知键、格式错误的值或无效类型时，Clawdbot 现在拒绝启动。
+这是为了安全而有意为之的。
 
-Fix it with Doctor:
+使用 Doctor 修复它：
 ```bash
-clawdbot doctor
-clawdbot doctor --fix
+openclaw-cn doctor
+openclaw-cn doctor --fix
 ```
 
-Notes:
-- `clawdbot doctor` reports every invalid entry.
-- `clawdbot doctor --fix` applies migrations/repairs and rewrites the config.
-- Diagnostic commands like `clawdbot logs`, `clawdbot health`, `clawdbot status`, `clawdbot gateway status`, and `clawdbot gateway probe` still run even if the config is invalid.
+注意事项：
+- `openclaw-cn doctor` 报告每个无效条目。
+- `openclaw-cn doctor --fix` 应用迁移/修复并重写配置。
+- 即使配置无效，诊断命令如 `openclaw-cn logs`、`openclaw-cn health`、`openclaw-cn status`、`openclaw-cn gateway status` 和 `openclaw-cn gateway probe` 仍然可以运行。
 
-### “All models failed” — what should I check first?
+### "所有模型都失败了" — 我应该首先检查什么？
 
-- **Credentials** present for the provider(s) being tried (auth profiles + env vars).
-- **Model routing**: confirm `agents.defaults.model.primary` and fallbacks are models you can access.
-- **Gateway logs** in `/tmp/clawdbot/…` for the exact provider error.
-- **Model status**: use `/model status` (chat) or `openclaw-cn models status` (CLI).
+- **凭据**：尝试的提供者是否存在凭据（认证配置文件 + 环境变量）。
+- **模型路由**：确认 `agents.defaults.model.primary` 和备用模型是您可以访问的模型。
+- **网关日志**：在 `/tmp/openclaw/…` 中查看确切的提供者错误。
+- **模型状态**：使用 `/model status`（聊天）或 `openclaw-cn models status`（CLI）。
 
-### I’m running on my personal WhatsApp number — why is self-chat weird?
+### 我在我的个人 WhatsApp 号码上运行 — 为什么自聊很奇怪？
 
-Enable self-chat mode and allowlist your own number:
+启用自聊模式并允许您自己的号码：
 
 ```json5
 {
@@ -466,228 +466,228 @@ Enable self-chat mode and allowlist your own number:
 }
 ```
 
-See [WhatsApp setup](/channels/whatsapp).
+参见 [WhatsApp 设置](/channels/whatsapp)。
 
-### WhatsApp logged me out. How do I re‑auth?
+### WhatsApp 将我登出了。如何重新认证？
 
-Run the login command again and scan the QR code:
+再次运行登录命令并扫描二维码：
 
 ```bash
 openclaw-cn channels login
 ```
 
-### Build errors on `main` — what’s the standard fix path?
+### 在 `main` 分支上出现构建错误 — 标准修复路径是什么？
 
 1) `git pull origin main && pnpm install`
-2) `clawdbot doctor`
-3) Check GitHub issues or Discord
-4) Temporary workaround: check out an older commit
+2) `openclaw-cn doctor`
+3) 检查 GitHub issues 或 Discord
+4) 临时解决方法：检出一个较早的提交
 
-### npm install fails (allow-build-scripts / missing tar or yargs). What now?
+### npm 安装失败（allow-build-scripts / 缺少 tar 或 yargs）。现在怎么办？
 
-If you’re running from source, use the repo’s package manager: **pnpm** (preferred).
-The repo declares `packageManager: "pnpm@…"`.
+如果您从源代码运行，请使用仓库的包管理器：**pnpm**（推荐）。
+仓库声明了 `packageManager: "pnpm@…"`。
 
-Typical recovery:
+典型恢复步骤：
 ```bash
-git status   # ensure you’re in the repo root
+git status   # 确保您在仓库根目录
 pnpm install
 pnpm build
-clawdbot doctor
-clawdbot gateway restart
+openclaw-cn doctor
+openclaw-cn gateway restart
 ```
 
-Why: pnpm is the configured package manager for this repo.
+原因：pnpm 是此仓库配置的包管理器。
 
-### How do I switch between git installs and npm installs?
+### 如何在 git 安装和 npm 安装之间切换？
 
-Use the **website installer** and select the install method with a flag. It
-upgrades in place and rewrites the gateway service to point at the new install.
+使用 **网站安装程序** 并使用标志选择安装方法。它
+就地升级并重写网关服务以指向新安装。
 
-Switch **to git install**:
+切换 **到 git 安装**：
 ```bash
 curl -fsSL https://clawd.bot/install.sh | bash -s -- --install-method git --no-onboard
 ```
 
-Switch **to npm global**:
+切换 **到 npm 全局**：
 ```bash
 curl -fsSL https://clawd.bot/install.sh | bash
 ```
 
-Notes:
-- The git flow only rebases if the repo is clean. Commit or stash changes first.
-- After switching, run:
+注意事项：
+- git 流程仅在仓库干净时才会变基。请先提交或暂存更改。
+- 切换后，运行：
   ```bash
-  clawdbot doctor
-  clawdbot gateway restart
+  openclaw-cn doctor
+  openclaw-cn gateway restart
   ```
 
-### Telegram block streaming isn’t splitting text between tool calls. Why?
+### Telegram 块流在工具调用之间没有分割文本。为什么？
 
-Block streaming only sends **completed text blocks**. Common reasons you see a single message:
-- `agents.defaults.blockStreamingDefault` is still `"off"`.
-- `channels.telegram.blockStreaming` is set to `false`.
-- `channels.telegram.streamMode` is `partial` or `block` **and draft streaming is active**
-  (private chat + topics). Draft streaming disables block streaming in that case.
-- Your `minChars` / coalesce settings are too high, so chunks get merged.
-- The model emits one large text block (no mid‑reply flush points).
+块流只发送**完整的文本块**。常见的导致单个消息的原因：
+- `agents.defaults.blockStreamingDefault` 仍然是 `"off"`。
+- `channels.telegram.blockStreaming` 设置为 `false`。
+- `channels.telegram.streamMode` 是 `partial` 或 `block` **并且草稿流是激活的**
+  （私人聊天 + 主题）。在这种情况下，草稿流禁用了块流。
+- 您的 `minChars` / 合并设置太高，因此块被合并了。
+- 模型发出一个大的文本块（没有中间回复刷新点）。
 
-Fix checklist:
-1) Put block streaming settings under `agents.defaults`, not the root.
-2) Set `channels.telegram.streamMode: "off"` if you want real multi‑message block replies.
-3) Use smaller chunk/coalesce thresholds while debugging.
+修复清单：
+1) 将块流设置放在 `agents.defaults` 下，而不是根目录。
+2) 如果您想要真正的多消息块回复，请设置 `channels.telegram.streamMode: "off"`。
+3) 调试时使用较小的块/合并阈值。
 
 See [Streaming](/concepts/streaming).
 
-### Discord doesn’t reply in my server even with `requireMention: false`. Why?
+### Discord 在我的服务器中即使设置了 `requireMention: false` 也不回复。为什么？
 
-`requireMention` only controls mention‑gating **after** the channel passes allowlists.
-By default `channels.discord.groupPolicy` is **allowlist**, so guilds must be explicitly enabled.
-If you set `channels.discord.guilds.<guildId>.channels`, only the listed channels are allowed; omit it to allow all channels in the guild.
+`requireMention` 仅在通道通过允许列表后控制提及门控。
+默认情况下 `channels.discord.groupPolicy` 是 **允许列表**，所以公会必须显式启用。
+如果您设置了 `channels.discord.guilds.<guildId>.channels`，只有列出的通道被允许；省略它以允许公会中的所有通道。
 
-Fix checklist:
-1) Set `channels.discord.groupPolicy: "open"` **or** add a guild allowlist entry (and optionally a channel allowlist).
-2) Use **numeric channel IDs** in `channels.discord.guilds.<guildId>.channels`.
-3) Put `requireMention: false` **under** `channels.discord.guilds` (global or per‑channel).
-   Top‑level `channels.discord.requireMention` is not a supported key.
-4) Ensure the bot has **Message Content Intent** and channel permissions.
-5) Run `openclaw-cn channels status --probe` for audit hints.
+修复清单：
+1) 设置 `channels.discord.groupPolicy: "open"` **或** 添加一个公会允许列表条目（以及可选的通道允许列表）。
+2) 在 `channels.discord.guilds.<guildId>.channels` 中使用 **数字通道 ID**。
+3) 将 `requireMention: false` 放在 `channels.discord.guilds` 下（全局或每个通道）。
+   顶层 `channels.discord.requireMention` 不是受支持的键。
+4) 确保机器人具有 **消息内容意图** 和通道权限。
+5) 运行 `openclaw-cn channels status --probe` 获取审核提示。
 
-Docs: [Discord](/channels/discord), [Channels troubleshooting](/channels/troubleshooting).
+文档：[Discord](/channels/discord)，[通道故障排除](/channels/troubleshooting)。
 
-### Cloud Code Assist API error: invalid tool schema (400). What now?
+### Cloud Code Assist API 错误：无效的工具模式 (400)。现在怎么办？
 
-This is almost always a **tool schema compatibility** issue. The Cloud Code Assist
-endpoint accepts a strict subset of JSON Schema. Clawdbot scrubs/normalizes tool
-schemas in current `main`, but the fix is not in the last release yet (as of
-January 13, 2026).
+这几乎总是 **工具模式兼容性** 问题。Cloud Code Assist
+端点接受严格的 JSON 模式子集。Clawdbot 在当前 `main` 分支中清理/规范化工具
+模式，但该修复尚未包含在最新版本中（截至
+2026年1月13日）。
 
-Fix checklist:
-1) **Update Clawdbot**:
-   - If you can run from source, pull `main` and restart the gateway.
-   - Otherwise, wait for the next release that includes the schema scrubber.
-2) Avoid unsupported keywords like `anyOf/oneOf/allOf`, `patternProperties`,
-   `additionalProperties`, `minLength`, `maxLength`, `format`, etc.
-3) If you define custom tools, keep the top‑level schema as `type: "object"` with
-   `properties` and simple enums.
+修复清单：
+1) **更新 Clawdbot**：
+   - 如果您可以从源代码运行，请拉取 `main` 并重启网关。
+   - 否则，请等待包含模式清理器的下一个版本。
+2) 避免不受支持的关键字，如 `anyOf/oneOf/allOf`、`patternProperties`、
+   `additionalProperties`、`minLength`、`maxLength`、`format` 等。
+3) 如果您定义自定义工具，请保持顶层模式为 `type: "object"`，并使用
+   `properties` 和简单枚举。
 
-See [Tools](/tools) and [TypeBox schemas](/concepts/typebox).
+参见 [工具](/tools) 和 [TypeBox 模式](/concepts/typebox)。
 
-## macOS Specific Issues
+## macOS 特定问题
 
-### App Crashes when Granting Permissions (Speech/Mic)
+### 授予权限时应用程序崩溃（语音/麦克风）
 
-If the app disappears or shows "Abort trap 6" when you click "Allow" on a privacy prompt:
+如果应用程序在您点击隐私提示上的"允许"时消失或显示"Abort trap 6"：
 
-**Fix 1: Reset TCC Cache**
+**修复 1：重置 TCC 缓存**
 ```bash
 tccutil reset All com.openclaw.mac.debug
 ```
 
-**Fix 2: Force New Bundle ID**
-If resetting doesn't work, change the `BUNDLE_ID` in [`scripts/package-mac-app.sh`](https://github.com/clawdbot/clawdbot/blob/main/scripts/package-mac-app.sh) (e.g., add a `.test` suffix) and rebuild. This forces macOS to treat it as a new app.
+**修复 2：强制新包 ID**
+如果重置不起作用，请在 [`scripts/package-mac-app.sh`](https://github.com/clawdbot/clawdbot/blob/main/scripts/package-mac-app.sh) 中更改 `BUNDLE_ID`（例如，添加 `.test` 后缀）并重建。这会强制 macOS 将其视为新应用。
 
-### Gateway stuck on "Starting..."
+### 网关卡在 "Starting..."
 
-The app connects to a local gateway on port `18789`. If it stays stuck:
+应用程序连接到端口 `18789` 上的本地网关。如果它一直卡住：
 
-**Fix 1: Stop the supervisor (preferred)**
-If the gateway is supervised by launchd, killing the PID will just respawn it. Stop the supervisor first:
+**修复 1：停止监督程序（首选）**
+如果网关由 launchd 监督，杀死 PID 只会使它重新生成。首先停止监督程序：
 ```bash
-clawdbot gateway status
-clawdbot gateway stop
-# Or: launchctl bootout gui/$UID/com.openclaw.gateway (replace with com.openclaw.<profile> if needed)
+openclaw-cn gateway status
+openclaw-cn gateway stop
+# 或：launchctl bootout gui/$UID/com.openclaw.gateway （如需要，替换为 com.openclaw.<profile>）
 ```
 
-**Fix 2: Port is busy (find the listener)**
+**修复 2：端口正忙（查找监听器）**
 ```bash
 lsof -nP -iTCP:18789 -sTCP:LISTEN
 ```
 
-If it’s an unsupervised process, try a graceful stop first, then escalate:
+如果是无人监督的进程，请先尝试优雅停止，然后升级：
 ```bash
 kill -TERM <PID>
 sleep 1
-kill -9 <PID> # last resort
+kill -9 <PID> # 最后的手段
 ```
 
-**Fix 3: Check the CLI install**
-Ensure the global `clawdbot` CLI is installed and matches the app version:
+**修复 3：检查 CLI 安装**
+确保全局 `openclaw-cn` CLI 已安装并与应用程序版本匹配：
 ```bash
-clawdbot --version
-npm install -g clawdbot@<version>
+openclaw-cn --version
+npm install -g openclaw-cn@<version>
 ```
 
-## Debug Mode
+## 调试模式
 
-Get verbose logging:
+获取详细日志：
 
 ```bash
-# Turn on trace logging in config:
+# 在配置中开启跟踪日志：
 #   ${OPENCLAW_CONFIG_PATH:-$HOME/.openclaw/openclaw.json} -> { logging: { level: "trace" } }
 #
-# Then run verbose commands to mirror debug output to stdout:
-clawdbot gateway --verbose
+# 然后运行详细命令将调试输出镜像到标准输出：
+openclaw-cn gateway --verbose
 openclaw-cn channels login --verbose
 ```
 
-## Log Locations
+## 日志位置
 
-| Log | Location |
+| 日志 | 位置 |
 |-----|----------|
-| Gateway file logs (structured) | `/tmp/clawdbot/clawdbot-YYYY-MM-DD.log` (or `logging.file`) |
-| Gateway service logs (supervisor) | macOS: `$OPENCLAW_STATE_DIR/logs/gateway.log` + `gateway.err.log` (default: `~/.openclaw/logs/...`; profiles use `~/.openclaw-<profile>/logs/...`)<br />Linux: `journalctl --user -u clawdbot-gateway[-<profile>].service -n 200 --no-pager`<br />Windows: `schtasks /Query /TN "Clawdbot Gateway (<profile>)" /V /FO LIST` |
-| Session files | `$OPENCLAW_STATE_DIR/agents/<agentId>/sessions/` |
-| Media cache | `$OPENCLAW_STATE_DIR/media/` |
-| Credentials | `$OPENCLAW_STATE_DIR/credentials/` |
+| 网关文件日志（结构化） | `/tmp/openclaw/openclaw-YYYY-MM-DD.log` （或 `logging.file`） |
+| 网关服务日志（监督程序） | macOS: `$OPENCLAW_STATE_DIR/logs/gateway.log` + `gateway.err.log` （默认：`~/.openclaw/logs/...`; 配置文件使用 `~/.openclaw-<profile>/logs/...`）<br />Linux: `journalctl --user -u openclaw-cn-gateway[-<profile>].service -n 200 --no-pager`<br />Windows: `schtasks /Query /TN "Clawdbot Gateway (<profile>)" /V /FO LIST` |
+| 会话文件 | `$OPENCLAW_STATE_DIR/agents/<agentId>/sessions/` |
+| 媒体缓存 | `$OPENCLAW_STATE_DIR/media/` |
+| 凭据 | `$OPENCLAW_STATE_DIR/credentials/` |
 
-## Health Check
+## 健康检查
 
 ```bash
-# Supervisor + probe target + config paths
-clawdbot gateway status
-# Include system-level scans (legacy/extra services, port listeners)
-clawdbot gateway status --deep
+# 监督程序 + 探测目标 + 配置路径
+openclaw-cn gateway status
+# 包括系统级扫描（遗留/额外服务，端口监听器）
+openclaw-cn gateway status --deep
 
-# Is the gateway reachable?
-clawdbot health --json
-# If it fails, rerun with connection details:
-clawdbot health --verbose
+# 网关是否可访问？
+openclaw-cn health --json
+# 如果失败，请使用连接详情重新运行：
+openclaw-cn health --verbose
 
-# Is something listening on the default port?
+# 是否有其他程序在默认端口上监听？
 lsof -nP -iTCP:18789 -sTCP:LISTEN
 
-# Recent activity (RPC log tail)
-clawdbot logs --follow
-# Fallback if RPC is down
-tail -20 /tmp/clawdbot/clawdbot-*.log
+# 最近活动（RPC 日志尾部）
+openclaw-cn logs --follow
+# 如果 RPC 关闭则使用备选方案
+tail -20 /tmp/openclaw/openclaw-*.log
 ```
 
-## Reset Everything
+## 重置所有内容
 
-Nuclear option:
+终极选项：
 
 ```bash
-clawdbot gateway stop
-# If you installed a service and want a clean install:
-# clawdbot gateway uninstall
+openclaw-cn gateway stop
+# 如果您安装了服务并希望进行干净安装：
+# openclaw-cn gateway uninstall
 
 trash "${OPENCLAW_STATE_DIR:-$HOME/.openclaw}"
-openclaw-cn channels login         # re-pair WhatsApp
-clawdbot gateway restart           # or: clawdbot gateway
+openclaw-cn channels login         # 重新配对 WhatsApp
+openclaw-cn gateway restart           # 或：openclaw-cn gateway
 ```
 
-⚠️ This loses all sessions and requires re-pairing WhatsApp.
+⚠️ 这会丢失所有会话并需要重新配对 WhatsApp。
 
-## Getting Help
+## 获取帮助
 
-1. Check logs first: `/tmp/clawdbot/` (default: `clawdbot-YYYY-MM-DD.log`, or your configured `logging.file`)
-2. Search existing issues on GitHub
-3. Open a new issue with:
-   - Clawdbot version
-   - Relevant log snippets
-   - Steps to reproduce
-   - Your config (redact secrets!)
+1. 首先检查日志：`/tmp/openclaw-cn/` （默认：`openclaw-cn-YYYY-MM-DD.log`，或您配置的 `logging.file`）
+2. 在 GitHub 上搜索现有问题
+3. 使用以下信息打开新问题：
+   - openclaw-cn 版本
+   - 相关日志片段
+   - 重现步骤
+   - 您的配置（请编辑掉敏感信息！）
 
 ---
 
@@ -695,19 +695,19 @@ clawdbot gateway restart           # or: clawdbot gateway
 
 🦞🔧
 
-### Browser Not Starting (Linux)
+### 浏览器未启动（Linux）
 
-If you see `"Failed to start Chrome CDP on port 18800"`:
+如果您看到 `"Failed to start Chrome CDP on port 18800"`：
 
-**Most likely cause:** Snap-packaged Chromium on Ubuntu.
+**最可能的原因：** Ubuntu 上的 Snap 包装的 Chromium。
 
-**Quick fix:** Install Google Chrome instead:
+**快速修复：** 改为安装 Google Chrome：
 ```bash
 wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 sudo dpkg -i google-chrome-stable_current_amd64.deb
 ```
 
-Then set in config:
+然后在配置中设置：
 ```json
 {
   "browser": {
@@ -716,4 +716,4 @@ Then set in config:
 }
 ```
 
-**Full guide:** See [browser-linux-troubleshooting](/tools/browser-linux-troubleshooting)
+**完整指南：** 参见 [browser-linux-troubleshooting](/tools/browser-linux-troubleshooting)

@@ -34,7 +34,7 @@ Native companion apps for Windows are also planned; the Gateway is recommended v
 - Install guide: [Getting Started](/start/getting-started)
 - Gateway runbook: [Gateway](/gateway)
 - Gateway configuration: [Configuration](/gateway/configuration)
-- Service status: `clawdbot gateway status`
+- Service status: `openclaw-cn gateway status`
 
 ## Gateway service install (CLI)
 
