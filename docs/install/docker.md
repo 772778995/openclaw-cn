@@ -837,6 +837,10 @@ cat ~/.openclaw/openclaw.json | grep -A 2 controlUi
 
 #### 如果仍然不工作？
 
+详见网关专题文档：[配对要求故障排除](/gateway/pairing-required-troubleshooting)
+
+故障排除步骤：
+
 1. **检查令牌**
    ```bash
    # 获取令牌
