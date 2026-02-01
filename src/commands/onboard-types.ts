@@ -37,7 +37,6 @@ export type AuthChoice =
   | "qwen-portal"
   | "volcengine-api-key"
   | "xiaomi-api-key"
-  | "minimax-portal"
   | "skip";
 export type GatewayAuthChoice = "off" | "token" | "password";
 export type ResetScope = "config" | "config+creds+sessions" | "full";

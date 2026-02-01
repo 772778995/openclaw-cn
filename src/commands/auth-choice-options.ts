@@ -248,16 +248,6 @@ export function buildAuthChoiceOptions(params: {
     hint: "Uses the bundled Gemini CLI auth plugin",
   });
   options.push({ value: "zai-api-key", label: "Z.AI (GLM 4.7) API key" });
-  options.push({ value: "zai-api-key", label: "Z.AI (GLM 4.7) API key" });
-  options.push({
-    value: "xiaomi-api-key",
-    label: "Xiaomi API key",
-  });
-  options.push({
-    value: "minimax-portal",
-    label: "MiniMax OAuth",
-    hint: "Oauth plugin for MiniMax",
-  });
   options.push({ value: "volcengine-api-key", label: "火山引擎 (ARK) API key" });
   options.push({ value: "qwen-portal", label: "Qwen OAuth" });
   options.push({
