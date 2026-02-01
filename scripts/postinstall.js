@@ -4,6 +4,27 @@ import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { setupGitHooks } from "./setup-git-hooks.js";
 
+/**
+ * Configure git to use HTTPS instead of SSH for GitHub URLs.
+ * This fixes npm install errors when libsignal-node tries to clone from GitHub.
+ */
+function configureGitUrlRedirects(repoRoot) {
+  const configs = [
+    ["url.https://github.com/.insteadOf", "ssh://git@github.com/"],
+    ["url.https://.insteadOf", "git://"],
+  ];
+
+  for (const [key, value] of configs) {
+    const result = spawnSync("git", ["config", key, value], {
+      cwd: repoRoot,
+      stdio: "pipe",
+    });
+    if (result.status === 0) {
+      console.log(`[postinstall] git config: ${key} = ${value}`);
+    }
+  }
+}
+
 function detectPackageManager(ua = process.env.npm_config_user_agent ?? "") {
   // Examples:
   // - "pnpm/10.23.0 npm/? node/v22.21.1 darwin arm64"
@@ -254,6 +275,11 @@ function main() {
 
   ensureExecutable(path.join(repoRoot, "dist", "entry.js"));
   setupGitHooks({ repoRoot });
+
+  // Configure git to use HTTPS for GitHub (fixes libsignal-node SSH errors)
+  if (hasGit(repoRoot)) {
+    configureGitUrlRedirects(repoRoot);
+  }
 
   if (!shouldApplyPnpmPatchedDependenciesFallback()) {
     return;

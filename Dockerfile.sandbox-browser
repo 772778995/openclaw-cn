@@ -20,9 +20,7 @@ RUN apt-get update \
     xvfb \
   && rm -rf /var/lib/apt/lists/*
 
-COPY scripts/sandbox-browser-entrypoint.sh /usr/local/bin/clawdbot-sandbox-browser
-RUN chmod +x /usr/local/bin/clawdbot-sandbox-browser
+# Configure git to use HTTPS for GitHub (fixes libsignal-node SSH errors)
+RUN git config --global url."https://github.com/".insteadOf ssh://git@github.com/
+RUN git config --global url."https://".insteadOf git://
 
-EXPOSE 9222 5900 6080
-
-CMD ["clawdbot-sandbox-browser"]
