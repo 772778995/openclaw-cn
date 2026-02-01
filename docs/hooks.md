@@ -92,7 +92,7 @@ my-hook/
 
 ## Hook Packs (npm/archives)
 
-Hook packs are standard npm packages that export one or more hooks via `clawdbot.hooks` in
+Hook packs are standard npm packages that export one or more hooks via `openclaw.hooks` in
 `package.json`. Install them with:
 
 ```bash

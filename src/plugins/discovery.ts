@@ -3,7 +3,8 @@ import path from "node:path";
 
 import { resolveConfigDir, resolveUserPath } from "../utils.js";
 import { resolveBundledPluginsDir } from "./bundled-dir.js";
-import type { ClawdbotPackageManifest, PackageManifest } from "./manifest.js";
+import type { OpenclawPackageManifest, PackageManifest } from "./manifest.js";
+import { resolvePackageOpenclawMeta } from "./manifest.js";
 import type { PluginDiagnostic, PluginOrigin } from "./types.js";
 
 const EXTENSION_EXTS = new Set([".ts", ".js", ".mts", ".cts", ".mjs", ".cjs"]);
@@ -18,7 +19,7 @@ export type PluginCandidate = {
   packageVersion?: string;
   packageDescription?: string;
   packageDir?: string;
-  packageClawdbot?: ClawdbotPackageManifest;
+  packageOpenclaw?: OpenclawPackageManifest;
 };
 
 export type PluginDiscoveryResult = {
@@ -44,7 +45,7 @@ function readPackageManifest(dir: string): PackageManifest | null {
 }
 
 function resolvePackageExtensions(manifest: PackageManifest): string[] {
-  const raw = manifest.clawdbot?.extensions;
+  const raw = resolvePackageOpenclawMeta(manifest)?.extensions;
   if (!Array.isArray(raw)) return [];
   return raw.map((entry) => (typeof entry === "string" ? entry.trim() : "")).filter(Boolean);
 }
@@ -93,7 +94,7 @@ function addCandidate(params: {
     packageVersion: manifest?.version?.trim() || undefined,
     packageDescription: manifest?.description?.trim() || undefined,
     packageDir: params.packageDir,
-    packageClawdbot: manifest?.clawdbot,
+    packageOpenclaw: manifest?.openclaw,
   });
 }
 

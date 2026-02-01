@@ -221,11 +221,11 @@ export function createPluginRegistry(registryParams: PluginRegistryParams) {
             ...entry.hook,
             name,
             description,
-            source: "clawdbot-plugin",
+            source: "openclaw-plugin",
             pluginId: record.id,
           },
-          clawdbot: {
-            ...entry.clawdbot,
+          openclaw: {
+            ...entry.openclaw,
             events: normalizedEvents,
           },
         }
@@ -233,14 +233,14 @@ export function createPluginRegistry(registryParams: PluginRegistryParams) {
           hook: {
             name,
             description,
-            source: "clawdbot-plugin",
+            source: "openclaw-plugin",
             pluginId: record.id,
             filePath: record.source,
             baseDir: path.dirname(record.source),
             handlerPath: record.source,
           },
           frontmatter: {},
-          clawdbot: { events: normalizedEvents },
+          openclaw: { events: normalizedEvents },
           invocation: { enabled: true },
         };
 

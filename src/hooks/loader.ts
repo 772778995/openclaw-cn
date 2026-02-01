@@ -66,7 +66,7 @@ export async function loadInternalHooks(
         const mod = (await import(cacheBustedUrl)) as Record<string, unknown>;
 
         // Get handler function (default or named export)
-        const exportName = entry.clawdbot?.export ?? "default";
+        const exportName = entry.openclaw?.export ?? "default";
         const handler = mod[exportName];
 
         if (typeof handler !== "function") {
@@ -77,7 +77,7 @@ export async function loadInternalHooks(
         }
 
         // Register for all events listed in metadata
-        const events = entry.clawdbot?.events ?? [];
+        const events = entry.openclaw?.events ?? [];
         if (events.length === 0) {
           console.warn(`Hook warning: Hook '${entry.hook.name}' has no events defined in metadata`);
           continue;

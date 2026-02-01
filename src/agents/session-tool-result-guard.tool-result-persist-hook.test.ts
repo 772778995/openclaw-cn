@@ -18,7 +18,7 @@ function writeTempPlugin(params: { dir: string; id: string; body: string }): str
   const file = path.join(pluginDir, `${params.id}.mjs`);
   fs.writeFileSync(file, params.body, "utf-8");
   fs.writeFileSync(
-    path.join(pluginDir, "clawdbot.plugin.json"),
+    path.join(pluginDir, "openclaw.plugin.json"),
     JSON.stringify(
       {
         id: params.id,

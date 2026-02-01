@@ -29,7 +29,7 @@ openclaw-cn plugins update --all
 Bundled plugins ship with Clawdbot but start disabled. Use `plugins enable` to
 activate them.
 
-All plugins must ship a `clawdbot.plugin.json` file with an inline JSON Schema
+All plugins must ship a `openclaw.plugin.json` file with an inline JSON Schema
 (`configSchema`, even if empty). Missing/invalid manifests or schemas prevent
 the plugin from loading and fail config validation.
 

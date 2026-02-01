@@ -33,8 +33,8 @@ metadata:
     const result = parseFrontmatterBlock(content);
     expect(result.metadata).toBeDefined();
 
-    const parsed = JSON5.parse(result.metadata ?? "") as { clawdbot?: { emoji?: string } };
-    expect(parsed.clawdbot?.emoji).toBe("disk");
+    const parsed = JSON5.parse(result.metadata ?? "") as { openclaw?: { emoji?: string } };
+    expect(parsed.openclaw?.emoji).toBe("disk");
   });
 
   it("preserves inline JSON values", () => {
@@ -65,8 +65,8 @@ metadata:
     expect(result.enabled).toBe("true");
     expect(result.retries).toBe("3");
     expect(JSON.parse(result.tags ?? "[]")).toEqual(["alpha", "beta"]);
-    const parsed = JSON5.parse(result.metadata ?? "") as { clawdbot?: { events?: string[] } };
-    expect(parsed.clawdbot?.events).toEqual(["command:new"]);
+    const parsed = JSON5.parse(result.metadata ?? "") as { openclaw?: { events?: string[] } };
+    expect(parsed.openclaw?.events).toEqual(["command:new"]);
   });
 
   it("returns empty when frontmatter is missing", () => {

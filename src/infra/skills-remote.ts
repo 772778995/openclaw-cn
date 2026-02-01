@@ -173,10 +173,10 @@ function listWorkspaceDirs(cfg: ClawdbotConfig): string[] {
 function collectRequiredBins(entries: SkillEntry[], targetPlatform: string): string[] {
   const bins = new Set<string>();
   for (const entry of entries) {
-    const os = entry.clawdbot?.os ?? [];
+    const os = entry.openclaw?.os ?? [];
     if (os.length > 0 && !os.includes(targetPlatform)) continue;
-    const required = entry.clawdbot?.requires?.bins ?? [];
-    const anyBins = entry.clawdbot?.requires?.anyBins ?? [];
+    const required = entry.openclaw?.requires?.bins ?? [];
+    const anyBins = entry.openclaw?.requires?.anyBins ?? [];
     for (const bin of required) {
       if (bin.trim()) bins.add(bin.trim());
     }

@@ -57,7 +57,7 @@ function normalizeAllowlist(input: unknown): string[] | undefined {
 }
 
 function isBundledSkill(entry: SkillEntry): boolean {
-  return entry.skill.source === "clawdbot-bundled";
+  return entry.skill.source === "openclaw-bundled";
 }
 
 export function resolveBundledAllowlist(config?: ClawdbotConfig): string[] | undefined {
@@ -95,7 +95,7 @@ export function shouldIncludeSkill(params: {
   const skillKey = resolveSkillKey(entry.skill, entry);
   const skillConfig = resolveSkillConfig(config, skillKey);
   const allowBundled = normalizeAllowlist(config?.skills?.allowBundled);
-  const osList = entry.clawdbot?.os ?? [];
+  const osList = entry.openclaw?.os ?? [];
   const remotePlatforms = eligibility?.remote?.platforms ?? [];
 
   if (skillConfig?.enabled === false) return false;
@@ -107,11 +107,11 @@ export function shouldIncludeSkill(params: {
   ) {
     return false;
   }
-  if (entry.clawdbot?.always === true) {
+  if (entry.openclaw?.always === true) {
     return true;
   }
 
-  const requiredBins = entry.clawdbot?.requires?.bins ?? [];
+  const requiredBins = entry.openclaw?.requires?.bins ?? [];
   if (requiredBins.length > 0) {
     for (const bin of requiredBins) {
       if (hasBinary(bin)) continue;
@@ -119,7 +119,7 @@ export function shouldIncludeSkill(params: {
       return false;
     }
   }
-  const requiredAnyBins = entry.clawdbot?.requires?.anyBins ?? [];
+  const requiredAnyBins = entry.openclaw?.requires?.anyBins ?? [];
   if (requiredAnyBins.length > 0) {
     const anyFound =
       requiredAnyBins.some((bin) => hasBinary(bin)) ||
@@ -127,19 +127,19 @@ export function shouldIncludeSkill(params: {
     if (!anyFound) return false;
   }
 
-  const requiredEnv = entry.clawdbot?.requires?.env ?? [];
+  const requiredEnv = entry.openclaw?.requires?.env ?? [];
   if (requiredEnv.length > 0) {
     for (const envName of requiredEnv) {
       if (process.env[envName]) continue;
       if (skillConfig?.env?.[envName]) continue;
-      if (skillConfig?.apiKey && entry.clawdbot?.primaryEnv === envName) {
+      if (skillConfig?.apiKey && entry.openclaw?.primaryEnv === envName) {
         continue;
       }
       return false;
     }
   }
 
-  const requiredConfig = entry.clawdbot?.requires?.config ?? [];
+  const requiredConfig = entry.openclaw?.requires?.config ?? [];
   if (requiredConfig.length > 0) {
     for (const configPath of requiredConfig) {
       if (!isConfigPathTruthy(config, configPath)) return false;

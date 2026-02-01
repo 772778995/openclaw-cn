@@ -74,7 +74,7 @@ function resolveInstallId(spec: SkillInstallSpec, index: number): string {
 }
 
 function findInstallSpec(entry: SkillEntry, installId: string): SkillInstallSpec | undefined {
-  const specs = entry.clawdbot?.install ?? [];
+  const specs = entry.openclaw?.install ?? [];
   for (const [index, spec] of specs.entries()) {
     if (resolveInstallId(spec, index) === installId) return spec;
   }

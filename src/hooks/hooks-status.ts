@@ -60,11 +60,11 @@ export type HookStatusReport = {
 };
 
 function resolveHookKey(entry: HookEntry): string {
-  return entry.clawdbot?.hookKey ?? entry.hook.name;
+  return entry.openclaw?.hookKey ?? entry.hook.name;
 }
 
 function normalizeInstallOptions(entry: HookEntry): HookInstallOption[] {
-  const install = entry.clawdbot?.install ?? [];
+  const install = entry.openclaw?.install ?? [];
   if (install.length === 0) return [];
 
   // For hooks, we just list all install options
@@ -96,23 +96,23 @@ function buildHookStatus(
 ): HookStatusEntry {
   const hookKey = resolveHookKey(entry);
   const hookConfig = resolveHookConfig(config, hookKey);
-  const managedByPlugin = entry.hook.source === "clawdbot-plugin";
+  const managedByPlugin = entry.hook.source === "openclaw-plugin";
   const disabled = managedByPlugin ? false : hookConfig?.enabled === false;
-  const always = entry.clawdbot?.always === true;
-  const emoji = entry.clawdbot?.emoji ?? entry.frontmatter.emoji;
+  const always = entry.openclaw?.always === true;
+  const emoji = entry.openclaw?.emoji ?? entry.frontmatter.emoji;
   const homepageRaw =
-    entry.clawdbot?.homepage ??
+    entry.openclaw?.homepage ??
     entry.frontmatter.homepage ??
     entry.frontmatter.website ??
     entry.frontmatter.url;
   const homepage = homepageRaw?.trim() ? homepageRaw.trim() : undefined;
-  const events = entry.clawdbot?.events ?? [];
+  const events = entry.openclaw?.events ?? [];
 
-  const requiredBins = entry.clawdbot?.requires?.bins ?? [];
-  const requiredAnyBins = entry.clawdbot?.requires?.anyBins ?? [];
-  const requiredEnv = entry.clawdbot?.requires?.env ?? [];
-  const requiredConfig = entry.clawdbot?.requires?.config ?? [];
-  const requiredOs = entry.clawdbot?.os ?? [];
+  const requiredBins = entry.openclaw?.requires?.bins ?? [];
+  const requiredAnyBins = entry.openclaw?.requires?.anyBins ?? [];
+  const requiredEnv = entry.openclaw?.requires?.env ?? [];
+  const requiredConfig = entry.openclaw?.requires?.config ?? [];
+  const requiredOs = entry.openclaw?.os ?? [];
 
   const missingBins = requiredBins.filter((bin) => {
     if (hasBinary(bin)) return false;

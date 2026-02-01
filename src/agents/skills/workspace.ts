@@ -14,7 +14,7 @@ import { resolveBundledSkillsDir } from "./bundled-dir.js";
 import { shouldIncludeSkill } from "./config.js";
 import {
   parseFrontmatter,
-  resolveClawdbotMetadata,
+  resolveOpenclawMetadata,
   resolveSkillInvocationPolicy,
 } from "./frontmatter.js";
 import { resolvePluginSkillDirs } from "./plugin-skills.js";
@@ -130,23 +130,23 @@ function loadSkillEntries(
   const bundledSkills = bundledSkillsDir
     ? loadSkills({
         dir: bundledSkillsDir,
-        source: "clawdbot-bundled",
+        source: "openclaw-bundled",
       })
     : [];
   const extraSkills = mergedExtraDirs.flatMap((dir) => {
     const resolved = resolveUserPath(dir);
     return loadSkills({
       dir: resolved,
-      source: "clawdbot-extra",
+      source: "openclaw-extra",
     });
   });
   const managedSkills = loadSkills({
     dir: managedSkillsDir,
-    source: "clawdbot-managed",
+    source: "openclaw-managed",
   });
   const workspaceSkills = loadSkills({
     dir: workspaceSkillsDir,
-    source: "clawdbot-workspace",
+    source: "openclaw-workspace",
   });
 
   const merged = new Map<string, Skill>();
@@ -167,7 +167,7 @@ function loadSkillEntries(
     return {
       skill,
       frontmatter,
-      clawdbot: resolveClawdbotMetadata(frontmatter),
+      openclaw: resolveOpenclawMetadata(frontmatter),
       invocation: resolveSkillInvocationPolicy(frontmatter),
     };
   });
@@ -204,7 +204,7 @@ export function buildWorkspaceSkillSnapshot(
     prompt,
     skills: eligible.map((entry) => ({
       name: entry.skill.name,
-      primaryEnv: entry.clawdbot?.primaryEnv,
+      primaryEnv: entry.openclaw?.primaryEnv,
     })),
     resolvedSkills,
     version: opts?.snapshotVersion,

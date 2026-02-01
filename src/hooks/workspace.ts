@@ -7,7 +7,7 @@ import { resolveBundledHooksDir } from "./bundled-dir.js";
 import { shouldIncludeHook } from "./config.js";
 import {
   parseFrontmatter,
-  resolveClawdbotMetadata,
+  resolveOpenclawMetadata,
   resolveHookInvocationPolicy,
 } from "./frontmatter.js";
 import type {
@@ -21,7 +21,7 @@ import type {
 
 type HookPackageManifest = {
   name?: string;
-  clawdbot?: { hooks?: string[] };
+  openclaw?: { hooks?: string[] };
 };
 
 function filterHookEntries(
@@ -44,7 +44,7 @@ function readHookPackageManifest(dir: string): HookPackageManifest | null {
 }
 
 function resolvePackageHooks(manifest: HookPackageManifest): string[] {
-  const raw = manifest.clawdbot?.hooks;
+  const raw = manifest.openclaw?.hooks;
   if (!Array.isArray(raw)) return [];
   return raw.map((entry) => (typeof entry === "string" ? entry.trim() : "")).filter(Boolean);
 }
@@ -167,7 +167,7 @@ export function loadHookEntriesFromDir(params: {
         pluginId: params.pluginId,
       },
       frontmatter,
-      clawdbot: resolveClawdbotMetadata(frontmatter),
+      openclaw: resolveOpenclawMetadata(frontmatter),
       invocation: resolveHookInvocationPolicy(frontmatter),
     };
     return entry;
@@ -193,23 +193,23 @@ function loadHookEntries(
   const bundledHooks = bundledHooksDir
     ? loadHooksFromDir({
         dir: bundledHooksDir,
-        source: "clawdbot-bundled",
+        source: "openclaw-bundled",
       })
     : [];
   const extraHooks = extraDirs.flatMap((dir) => {
     const resolved = resolveUserPath(dir);
     return loadHooksFromDir({
       dir: resolved,
-      source: "clawdbot-workspace", // Extra dirs treated as workspace
+      source: "openclaw-workspace", // Extra dirs treated as workspace
     });
   });
   const managedHooks = loadHooksFromDir({
     dir: managedHooksDir,
-    source: "clawdbot-managed",
+    source: "openclaw-managed",
   });
   const workspaceHooks = loadHooksFromDir({
     dir: workspaceHooksDir,
-    source: "clawdbot-workspace",
+    source: "openclaw-workspace",
   });
 
   const merged = new Map<string, Hook>();
@@ -230,7 +230,7 @@ function loadHookEntries(
     return {
       hook,
       frontmatter,
-      clawdbot: resolveClawdbotMetadata(frontmatter),
+      openclaw: resolveOpenclawMetadata(frontmatter),
       invocation: resolveHookInvocationPolicy(frontmatter),
     };
   });
@@ -253,7 +253,7 @@ export function buildWorkspaceHookSnapshot(
   return {
     hooks: eligible.map((entry) => ({
       name: entry.hook.name,
-      events: entry.clawdbot?.events ?? [],
+      events: entry.openclaw?.events ?? [],
     })),
     resolvedHooks: eligible.map((entry) => entry.hook),
     version: opts?.snapshotVersion,

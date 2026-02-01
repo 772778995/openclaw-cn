@@ -244,7 +244,7 @@ describe("installPluginFromArchive", () => {
     expect(manifest.version).toBe("0.0.2");
   });
 
-  it("rejects packages without clawdbot.extensions", async () => {
+  it("rejects packages without openclaw.extensions", async () => {
     const stateDir = makeTempDir();
     const workDir = makeTempDir();
     const pkgDir = path.join(workDir, "package");
@@ -266,6 +266,6 @@ describe("installPluginFromArchive", () => {
     const result = await installPluginFromArchive({ archivePath, extensionsDir });
     expect(result.ok).toBe(false);
     if (result.ok) return;
-    expect(result.error).toContain("clawdbot.extensions");
+    expect(result.error).toContain("openclaw.extensions");
   });
 });

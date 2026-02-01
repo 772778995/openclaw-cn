@@ -24,13 +24,13 @@ function normalizePluginHookEntry(api: ClawdbotPluginApi, entry: HookEntry): Hoo
     ...entry,
     hook: {
       ...entry.hook,
-      source: "clawdbot-plugin",
+      source: "openclaw-plugin",
       pluginId: api.id,
     },
-    clawdbot: {
-      ...entry.clawdbot,
-      hookKey: entry.clawdbot?.hookKey ?? `${api.id}:${entry.hook.name}`,
-      events: entry.clawdbot?.events ?? [],
+    openclaw: {
+      ...entry.openclaw,
+      hookKey: entry.openclaw?.hookKey ?? `${api.id}:${entry.hook.name}`,
+      events: entry.openclaw?.events ?? [],
     },
   };
 }
@@ -43,7 +43,7 @@ async function loadHookHandler(
     const url = pathToFileURL(entry.hook.handlerPath).href;
     const cacheBustedUrl = `${url}?t=${Date.now()}`;
     const mod = (await import(cacheBustedUrl)) as Record<string, unknown>;
-    const exportName = entry.clawdbot?.export ?? "default";
+    const exportName = entry.openclaw?.export ?? "default";
     const handler = mod[exportName];
     if (typeof handler === "function") {
       return handler as InternalHookHandler;
@@ -63,7 +63,7 @@ export async function registerPluginHooksFromDir(
   const resolvedDir = resolveHookDir(api, dir);
   const hooks = loadHookEntriesFromDir({
     dir: resolvedDir,
-    source: "clawdbot-plugin",
+    source: "openclaw-plugin",
     pluginId: api.id,
   });
 
@@ -76,7 +76,7 @@ export async function registerPluginHooksFromDir(
 
   for (const entry of hooks) {
     const normalizedEntry = normalizePluginHookEntry(api, entry);
-    const events = normalizedEntry.clawdbot?.events ?? [];
+    const events = normalizedEntry.openclaw?.events ?? [];
     if (events.length === 0) {
       api.logger.warn?.(`[hooks] ${entry.hook.name} has no events; skipping`);
       api.registerHook(events, async () => undefined, {

@@ -73,7 +73,7 @@ function resolveBundledPluginSources(params: {
     if (bundled.has(pluginId)) continue;
 
     const npmSpec =
-      candidate.packageClawdbot?.install?.npmSpec?.trim() ||
+      candidate.packageOpenclaw?.install?.npmSpec?.trim() ||
       candidate.packageName?.trim() ||
       undefined;
 

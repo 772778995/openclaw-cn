@@ -47,7 +47,7 @@ describe("onboard-hooks", () => {
       {
         name: "session-memory",
         description: "Save session context to memory when /new command is issued",
-        source: "clawdbot-bundled",
+        source: "openclaw-bundled",
         pluginId: undefined,
         filePath: "/mock/workspace/hooks/session-memory/HOOK.md",
         baseDir: "/mock/workspace/hooks/session-memory",
@@ -80,7 +80,7 @@ describe("onboard-hooks", () => {
       {
         name: "command-logger",
         description: "Log all command events to a centralized audit file",
-        source: "clawdbot-bundled",
+        source: "openclaw-bundled",
         pluginId: undefined,
         filePath: "/mock/workspace/hooks/command-logger/HOOK.md",
         baseDir: "/mock/workspace/hooks/command-logger",

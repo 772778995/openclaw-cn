@@ -20,7 +20,7 @@ export function applySkillEnvOverrides(params: { skills: SkillEntry[]; config?: 
       }
     }
 
-    const primaryEnv = entry.clawdbot?.primaryEnv;
+    const primaryEnv = entry.openclaw?.primaryEnv;
     if (primaryEnv && skillConfig.apiKey && !process.env[primaryEnv]) {
       updates.push({ key: primaryEnv, prev: process.env[primaryEnv] });
       process.env[primaryEnv] = skillConfig.apiKey;

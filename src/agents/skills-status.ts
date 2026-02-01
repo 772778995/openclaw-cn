@@ -69,7 +69,7 @@ export type SkillStatusReport = {
 };
 
 function resolveSkillKey(entry: SkillEntry): string {
-  return entry.clawdbot?.skillKey ?? entry.skill.name;
+  return entry.openclaw?.skillKey ?? entry.skill.name;
 }
 
 function selectPreferredInstallSpec(
@@ -98,7 +98,7 @@ function normalizeInstallOptions(
   entry: SkillEntry,
   prefs: SkillsInstallPreferences,
 ): SkillInstallOption[] {
-  const install = entry.clawdbot?.install ?? [];
+  const install = entry.openclaw?.install ?? [];
   if (install.length === 0) return [];
 
   const platform = process.platform;
@@ -156,20 +156,20 @@ function buildSkillStatus(
   const disabled = skillConfig?.enabled === false;
   const allowBundled = resolveBundledAllowlist(config);
   const blockedByAllowlist = !isBundledSkillAllowed(entry, allowBundled);
-  const always = entry.clawdbot?.always === true;
-  const emoji = entry.clawdbot?.emoji ?? entry.frontmatter.emoji;
+  const always = entry.openclaw?.always === true;
+  const emoji = entry.openclaw?.emoji ?? entry.frontmatter.emoji;
   const homepageRaw =
-    entry.clawdbot?.homepage ??
+    entry.openclaw?.homepage ??
     entry.frontmatter.homepage ??
     entry.frontmatter.website ??
     entry.frontmatter.url;
   const homepage = homepageRaw?.trim() ? homepageRaw.trim() : undefined;
 
-  const requiredBins = entry.clawdbot?.requires?.bins ?? [];
-  const requiredAnyBins = entry.clawdbot?.requires?.anyBins ?? [];
-  const requiredEnv = entry.clawdbot?.requires?.env ?? [];
-  const requiredConfig = entry.clawdbot?.requires?.config ?? [];
-  const requiredOs = entry.clawdbot?.os ?? [];
+  const requiredBins = entry.openclaw?.requires?.bins ?? [];
+  const requiredAnyBins = entry.openclaw?.requires?.anyBins ?? [];
+  const requiredEnv = entry.openclaw?.requires?.env ?? [];
+  const requiredConfig = entry.openclaw?.requires?.config ?? [];
+  const requiredOs = entry.openclaw?.os ?? [];
 
   const missingBins = requiredBins.filter((bin) => {
     if (hasBinary(bin)) return false;
@@ -195,7 +195,7 @@ function buildSkillStatus(
   for (const envName of requiredEnv) {
     if (process.env[envName]) continue;
     if (skillConfig?.env?.[envName]) continue;
-    if (skillConfig?.apiKey && entry.clawdbot?.primaryEnv === envName) {
+    if (skillConfig?.apiKey && entry.openclaw?.primaryEnv === envName) {
       continue;
     }
     missingEnv.push(envName);
@@ -234,7 +234,7 @@ function buildSkillStatus(
     filePath: entry.skill.filePath,
     baseDir: entry.skill.baseDir,
     skillKey,
-    primaryEnv: entry.clawdbot?.primaryEnv,
+    primaryEnv: entry.openclaw?.primaryEnv,
     emoji,
     homepage,
     always,

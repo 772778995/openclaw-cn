@@ -105,7 +105,7 @@ Bundled plugins must be enabled explicitly via `plugins.entries.<id>.enabled`
 or `openclaw-cn plugins enable <id>`. Installed plugins are enabled by default,
 but can be disabled the same way.
 
-Each plugin must include a `clawdbot.plugin.json` file in its root. If a path
+Each plugin must include a `openclaw.plugin.json` file in its root. If a path
 points at a file, the plugin root is the file's directory and must contain the
 manifest.
 
@@ -114,7 +114,7 @@ wins and lower-precedence copies are ignored.
 
 ### Package packs
 
-A plugin directory may include a `package.json` with `clawdbot.extensions`:
+A plugin directory may include a `package.json` with `openclaw.extensions`:
 
 ```json
 {
@@ -212,7 +212,7 @@ Validation rules (strict):
 - Unknown `channels.<id>` keys are **errors** unless a plugin manifest declares
   the channel id.
 - Plugin config is validated using the JSON Schema embedded in
-  `clawdbot.plugin.json` (`configSchema`).
+  `openclaw.plugin.json` (`configSchema`).
 - If a plugin is disabled, its config is preserved and a **warning** is emitted.
 
 ## Plugin slots (exclusive categories)
@@ -603,7 +603,7 @@ Recommended packaging:
 
 Publishing contract:
 
-- Plugin `package.json` must include `clawdbot.extensions` with one or more entry files.
+- Plugin `package.json` must include `openclaw.extensions` with one or more entry files.
 - Entry files can be `.js` or `.ts` (jiti loads TS at runtime).
 - `openclaw-cn plugins install <npm-spec>` uses `npm pack`, extracts into `~/.openclaw/extensions/<id>/`, and enables it in config.
 - Config key stability: scoped packages are normalized to the **unscoped** id for `plugins.entries.*`.
@@ -635,4 +635,4 @@ Plugins run in-process with the Gateway. Treat them as trusted code:
 Plugins can (and should) ship tests:
 
 - In-repo plugins can keep Vitest tests under `src/**` (example: `src/plugins/voice-call.plugin.test.ts`).
-- Separately published plugins should run their own CI (lint/build/test) and validate `clawdbot.extensions` points at the built entrypoint (`dist/index.js`).
+- Separately published plugins should run their own CI (lint/build/test) and validate `openclaw.extensions` points at the built entrypoint (`dist/index.js`).

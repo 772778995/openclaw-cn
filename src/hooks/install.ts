@@ -22,7 +22,7 @@ type HookPackageManifest = {
   name?: string;
   version?: string;
   dependencies?: Record<string, string>;
-  clawdbot?: { hooks?: string[] };
+  openclaw?: { hooks?: string[] };
 };
 
 export type InstallHooksResult =
@@ -55,13 +55,13 @@ export function resolveHookInstallDir(hookId: string, hooksDir?: string): string
 }
 
 async function ensureClawdbotHooks(manifest: HookPackageManifest) {
-  const hooks = manifest.clawdbot?.hooks;
+  const hooks = manifest.openclaw?.hooks;
   if (!Array.isArray(hooks)) {
-    throw new Error("package.json missing clawdbot.hooks");
+    throw new Error("package.json missing openclaw.hooks");
   }
   const list = hooks.map((e) => (typeof e === "string" ? e.trim() : "")).filter(Boolean);
   if (list.length === 0) {
-    throw new Error("package.json clawdbot.hooks is empty");
+    throw new Error("package.json openclaw.hooks is empty");
   }
   return list;
 }

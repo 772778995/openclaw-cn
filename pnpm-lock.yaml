@@ -136,6 +136,9 @@ importers:
       node-edge-tts:
         specifier: ^1.2.9
         version: 1.2.9
+      openclaw:
+        specifier: npm:openclaw-cn@*
+        version: openclaw-cn@2026.1.31(@types/express@5.0.6)(audio-decode@2.2.3)(devtools-protocol@0.0.1561482)(typescript@5.9.3)
       osc-progress:
         specifier: ^0.3.0
         version: 0.3.0

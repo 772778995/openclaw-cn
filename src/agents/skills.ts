@@ -14,7 +14,7 @@ export {
   applySkillEnvOverridesFromSnapshot,
 } from "./skills/env-overrides.js";
 export type {
-  ClawdbotSkillMetadata,
+  OpenclawSkillMetadata,
   SkillEligibilityContext,
   SkillCommandSpec,
   SkillEntry,

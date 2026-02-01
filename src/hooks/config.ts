@@ -73,8 +73,8 @@ export function shouldIncludeHook(params: {
   const { entry, config, eligibility } = params;
   const hookKey = resolveHookKey(entry.hook.name, entry);
   const hookConfig = resolveHookConfig(config, hookKey);
-  const pluginManaged = entry.hook.source === "clawdbot-plugin";
-  const osList = entry.clawdbot?.os ?? [];
+  const pluginManaged = entry.hook.source === "openclaw-plugin";
+  const osList = entry.openclaw?.os ?? [];
   const remotePlatforms = eligibility?.remote?.platforms ?? [];
 
   // Check if explicitly disabled
@@ -90,12 +90,12 @@ export function shouldIncludeHook(params: {
   }
 
   // If marked as 'always', bypass all other checks
-  if (entry.clawdbot?.always === true) {
+  if (entry.openclaw?.always === true) {
     return true;
   }
 
   // Check required binaries (all must be present)
-  const requiredBins = entry.clawdbot?.requires?.bins ?? [];
+  const requiredBins = entry.openclaw?.requires?.bins ?? [];
   if (requiredBins.length > 0) {
     for (const bin of requiredBins) {
       if (hasBinary(bin)) continue;
@@ -105,7 +105,7 @@ export function shouldIncludeHook(params: {
   }
 
   // Check anyBins (at least one must be present)
-  const requiredAnyBins = entry.clawdbot?.requires?.anyBins ?? [];
+  const requiredAnyBins = entry.openclaw?.requires?.anyBins ?? [];
   if (requiredAnyBins.length > 0) {
     const anyFound =
       requiredAnyBins.some((bin) => hasBinary(bin)) ||
@@ -114,7 +114,7 @@ export function shouldIncludeHook(params: {
   }
 
   // Check required environment variables
-  const requiredEnv = entry.clawdbot?.requires?.env ?? [];
+  const requiredEnv = entry.openclaw?.requires?.env ?? [];
   if (requiredEnv.length > 0) {
     for (const envName of requiredEnv) {
       if (process.env[envName]) continue;
@@ -124,7 +124,7 @@ export function shouldIncludeHook(params: {
   }
 
   // Check required config paths
-  const requiredConfig = entry.clawdbot?.requires?.config ?? [];
+  const requiredConfig = entry.openclaw?.requires?.config ?? [];
   if (requiredConfig.length > 0) {
     for (const configPath of requiredConfig) {
       if (!isConfigPathTruthy(config, configPath)) return false;

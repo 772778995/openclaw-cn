@@ -3,7 +3,7 @@ import path from "node:path";
 
 import { discoverClawdbotPlugins } from "../../plugins/discovery.js";
 import type { PluginOrigin } from "../../plugins/types.js";
-import type { ClawdbotPackageManifest } from "../../plugins/manifest.js";
+import type { OpenclawPackageManifest } from "../../plugins/manifest.js";
 import { CONFIG_DIR, resolveUserPath } from "../../utils.js";
 import type { ChannelMeta } from "./types.js";
 
@@ -49,7 +49,7 @@ type ExternalCatalogEntry = {
   name?: string;
   version?: string;
   description?: string;
-  clawdbot?: ClawdbotPackageManifest;
+  openclaw?: OpenclawPackageManifest;
 };
 
 const DEFAULT_CATALOG_PATHS = [
@@ -114,7 +114,7 @@ function loadExternalCatalogEntries(options: CatalogOptions): ExternalCatalogEnt
 }
 
 function toChannelMeta(params: {
-  channel: NonNullable<ClawdbotPackageManifest["channel"]>;
+  channel: NonNullable<OpenclawPackageManifest["channel"]>;
   id: string;
 }): ChannelMeta | null {
   const label = params.channel.label?.trim();
@@ -162,7 +162,7 @@ function toChannelMeta(params: {
 }
 
 function resolveInstallInfo(params: {
-  manifest: ClawdbotPackageManifest;
+  manifest: OpenclawPackageManifest;
   packageName?: string;
   packageDir?: string;
   workspaceDir?: string;
@@ -185,9 +185,9 @@ function buildCatalogEntry(candidate: {
   packageName?: string;
   packageDir?: string;
   workspaceDir?: string;
-  packageClawdbot?: ClawdbotPackageManifest;
+  packageOpenclaw?: OpenclawPackageManifest;
 }): ChannelPluginCatalogEntry | null {
-  const manifest = candidate.packageClawdbot;
+  const manifest = candidate.packageOpenclaw;
   if (!manifest?.channel) return null;
   const id = manifest.channel.id?.trim();
   if (!id) return null;
@@ -206,7 +206,7 @@ function buildCatalogEntry(candidate: {
 function buildExternalCatalogEntry(entry: ExternalCatalogEntry): ChannelPluginCatalogEntry | null {
   return buildCatalogEntry({
     packageName: entry.name,
-    packageClawdbot: entry.clawdbot,
+    packageOpenclaw: entry.openclaw,
   });
 }
 
