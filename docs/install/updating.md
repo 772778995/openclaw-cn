@@ -13,8 +13,14 @@ read_when:
 
 **大多数用户只需要这一个命令：**
 
+**Linux / macOS：**
 ```bash
 npm i -g openclaw-cn@latest && openclaw-cn doctor && openclaw-cn gateway restart
+```
+
+**Windows（PowerShell）：**
+```powershell
+npm i -g openclaw-cn@latest; openclaw-cn doctor; openclaw-cn gateway restart
 ```
 
 这会：更新到最新版本 → 运行诊断修复 → 重启 Gateway。
