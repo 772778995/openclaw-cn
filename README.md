@@ -21,16 +21,6 @@
 
 ---
 
-## ⭐ Star 趋势
-
-<a href="https://star-history.com/#jiulingyun/openclaw-cn&Date">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=jiulingyun/openclaw-cn&type=Date&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=jiulingyun/openclaw-cn&type=Date" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=jiulingyun/openclaw-cn&type=Date" />
- </picture>
-</a>
-
 ## ✨ 特性
 
 - **🇨🇳 完整中文化** — CLI、Web 控制界面、配置向导全部汉化
@@ -127,8 +117,18 @@ pnpm openclaw-cn onboard --install-daemon
 
 [MIT](LICENSE)
 
+## ⭐ Star 趋势
+
+<a href="https://star-history.com/#jiulingyun/openclaw-cn&Date">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=jiulingyun/openclaw-cn&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=jiulingyun/openclaw-cn&type=Date" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=jiulingyun/openclaw-cn&type=Date" />
+ </picture>
+</a>
+
 ---
 
 <p align="center">
-  基于 <a href="https://github.com/nicekwell/openclaw">Openclaw</a> · 感谢原项目开发者 🧞
+  基于 <a href="https://github.com/openclaw/openclaw">Openclaw</a> · 感谢原项目开发者 🧞
 </p>
