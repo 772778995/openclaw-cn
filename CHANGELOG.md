@@ -4,6 +4,10 @@ Docs: https://docs.clawd.bot
 
 ## 2026.2.4
 
+### ✨ 新功能（Features）
+
+- Volcengine: 支持通过环境变量 `MODEL_AGENT_CLIENT_REQ_ID` 和 `MODEL_AGENT_CLIENT_REQ_VALUE` 为火山引擎模型请求添加自定义 Header，用于标识调用方来源 (#24) - 感谢 @dragonforce2010
+
 ### 🔧 修复（Fixes）
 
 - Packaging: 修复 npm 包缺少 Control UI 资源的问题，导致网关管理页面无法正常显示 (#28)
