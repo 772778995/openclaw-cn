@@ -9,6 +9,7 @@ overrides:
   hono: 4.11.4
   tar: 7.5.4
   openclaw: link:.
+  libsignal: npm:@openclaw-cn/libsignal@2.0.1
 
 importers:
 
@@ -1837,6 +1838,9 @@ packages:
     resolution: {integrity: sha512-da6KbdNCV5sr1/txD896V+6W0iamFWrvVl8cHkBSPT+YlvmT3DwXa4jxZnQc+gnuTEqSWbBeoSZYTayXH9wXcw==}
     engines: {node: '>= 20'}
 
+  '@openclaw-cn/libsignal@2.0.1':
+    resolution: {integrity: sha512-LpiwCbZm6Wpnsc6H4TmVoAzJGx/YXbZ6JNjHhmQLBU4O28ZEHmfP9CYqbUx8nTrg89ynlNJoB16lUQtvDtvBpQ==}
+
   '@opentelemetry/api-logs@0.211.0':
     resolution: {integrity: sha512-swFdZq8MCdmdR22jTVGQDhwqDzcI4M10nhjXkLr1EsIzXgZBqm4ZlmmcWsg3TSNf+3mzgOiqveXmBLZuDi2Lgg==}
     engines: {node: '>=8.0.0'}
@@ -2973,10 +2977,6 @@ packages:
         optional: true
       link-preview-js:
         optional: true
-
-  '@whiskeysockets/libsignal-node@https://codeload.github.com/whiskeysockets/libsignal-node/tar.gz/1c30d7d7e76a3b0aa120b04dc6a26f5a12dccf67':
-    resolution: {tarball: https://codeload.github.com/whiskeysockets/libsignal-node/tar.gz/1c30d7d7e76a3b0aa120b04dc6a26f5a12dccf67}
-    version: 2.0.1
 
   abort-controller@3.0.0:
     resolution: {integrity: sha512-h8lQ8tacZYnR3vNQTgibj+tODHI5/+l06Au2Pcriv/Gmet0eaj4TwWH41sO9wnHDiQsEj19q0drzdWdeAHtweg==}
@@ -7774,6 +7774,11 @@ snapshots:
       '@octokit/webhooks-methods': 6.0.0
     optional: true
 
+  '@openclaw-cn/libsignal@2.0.1':
+    dependencies:
+      curve25519-js: 0.0.4
+      protobufjs: 6.8.8
+
   '@opentelemetry/api-logs@0.211.0':
     dependencies:
       '@opentelemetry/api': 1.9.0
@@ -9110,7 +9115,7 @@ snapshots:
       '@cacheable/node-cache': 1.7.6
       '@hapi/boom': 9.1.4
       async-mutex: 0.5.0
-      libsignal: '@whiskeysockets/libsignal-node@https://codeload.github.com/whiskeysockets/libsignal-node/tar.gz/1c30d7d7e76a3b0aa120b04dc6a26f5a12dccf67'
+      libsignal: '@openclaw-cn/libsignal@2.0.1'
       lru-cache: 11.2.4
       music-metadata: 11.10.6
       p-queue: 9.1.0
@@ -9124,11 +9129,6 @@ snapshots:
       - bufferutil
       - supports-color
       - utf-8-validate
-
-  '@whiskeysockets/libsignal-node@https://codeload.github.com/whiskeysockets/libsignal-node/tar.gz/1c30d7d7e76a3b0aa120b04dc6a26f5a12dccf67':
-    dependencies:
-      curve25519-js: 0.0.4
-      protobufjs: 6.8.8
 
   abort-controller@3.0.0:
     dependencies:
